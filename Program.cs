@@ -41,7 +41,7 @@ namespace cat_bot
 
             discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "ODE2MTE0NzE5MjQ4NjEzNDI2.YD2QDw.XeZSaNKWxrLgE-7iuVCnDnBJqWc",
+                Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 MinimumLogLevel = LogLevel.Debug
