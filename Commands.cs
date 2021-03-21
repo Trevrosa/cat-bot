@@ -175,12 +175,12 @@ namespace cat_bot
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
@@ -194,12 +194,12 @@ namespace cat_bot
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
@@ -213,12 +213,12 @@ namespace cat_bot
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        dynamic msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }

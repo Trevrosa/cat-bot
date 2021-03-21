@@ -29,7 +29,7 @@ namespace cat_bot
     {
         private static void Main(string[] args)
         {
-            using (SentrySdk.Init("https://218dee17e1a340e19ca5382bbadeda35@o545219.ingest.sentry.io/5666766"))
+            using (SentrySdk.Init(new SentryOptions() { Dsn = "https://218dee17e1a340e19ca5382bbadeda35@o545219.ingest.sentry.io/5666766", TracesSampleRate = 1 }))
             {
                 MainAsync().GetAwaiter().GetResult();
             }
@@ -206,7 +206,8 @@ namespace cat_bot
                             {
                                 // do nothing
                             }
-                            break;
+
+                            throw e.Exception;
                         }
                     case FileNotFoundException:
                         {
@@ -216,19 +217,20 @@ namespace cat_bot
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 
                             await e.Context.RespondAsync(null, embed);
-                            break;
+
+                            throw e.Exception;
                         }
                     case NullReferenceException:
                         {
-                            break;
+                            throw e.Exception;
                         }
                     case ArgumentException:
                         {
-                            break;
+                            throw e.Exception;
                         }
                     case CommandNotFoundException:
                         {
-                            break;
+                            throw e.Exception;
                         }
                     default:
                         {
@@ -249,7 +251,7 @@ namespace cat_bot
                             };
 
                             await botchannel.SendMessageAsync(ER);
-                            break;
+                            throw e.Exception;
                         }
                 }
             });
@@ -290,6 +292,8 @@ namespace cat_bot
                 {
                     // do nothing
                 }
+
+                throw e.Exception;
             });
 
             return Task.CompletedTask;
