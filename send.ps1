@@ -11,8 +11,6 @@ if (!$WEBHOOK_URL) {
   Exit
 }
 
-Write-Output "[Webhook]: Sending webhook to Discord..."
-
 Switch ($STATUS) {
   "success" {
     $EMBED_COLOR=3066993
@@ -28,6 +26,7 @@ Switch ($STATUS) {
     Break
   }
 }
+
 $AVATAR="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Appveyor_logo.svg/256px-Appveyor_logo.svg.png"
 
 if (!$env:APPVEYOR_REPO_COMMIT) {
@@ -60,7 +59,7 @@ $WEBHOOK_DATA="{
   ""embeds"": [ {
     ""color"": $EMBED_COLOR,
     ""title"": ""Build #$env:APPVEYOR_BUILD_NUMBER $STATUS_MESSAGE"",
-    ""description"": ""**$COMMIT_SUBJECT**\n$COMMIT_MESSAGE $CREDITS"",
+    ""description"": ""**$COMMIT_SUBJECT** $COMMIT_MESSAGE $CREDITS"",
     ""fields"": [
       {
         ""name"": ""Commit"",
