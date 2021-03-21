@@ -1,2 +1,2 @@
 # cat-bot
-cat bot best bot. Pro gamer code here.
+cat bot best bot it has the cat
