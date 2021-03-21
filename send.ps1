@@ -59,7 +59,7 @@ $WEBHOOK_DATA="{
   ""embeds"": [ {
     ""color"": $EMBED_COLOR,
     ""title"": ""Build #$env:APPVEYOR_BUILD_NUMBER $STATUS_MESSAGE"",
-    ""description"": ""**$COMMIT_SUBJECT** \n$CREDITS"",
+    ""description"": ""**$COMMIT_SUBJECT** $CREDITS"",
     ""fields"": [
       {
         ""name"": ""Commit"",
