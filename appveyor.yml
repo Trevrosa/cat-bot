@@ -1,0 +1,17 @@
+version: 1.0.{build}
+environment:
+  WEBHOOK_URL: https://canary.discord.com/api/webhooks/823032620681527296/Fwuc8gZssWd7sjVkZhE8qNhySflTyVADXPutNVNezz1GeWh_5aA7blVyv__4H4kztZNw
+before_build:
+- cmd: >-
+    dotnet nuget add source https://nuget.emzi0767.com/api/v3/index.json --name DSharpPlus
+
+    nuget restore
+build:
+  project: cat bot.sln
+  verbosity: minimal
+on_success:
+      - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+      - ps: ./send.ps1 success $env:WEBHOOK_URL
+    on_failure:
+      - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+      - ps: ./send.ps1 failure $env:WEBHOOK_URL
