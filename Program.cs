@@ -207,7 +207,7 @@ namespace cat_bot
                                 // do nothing
                             }
 
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                     case FileNotFoundException:
                         {
@@ -218,19 +218,19 @@ namespace cat_bot
 
                             await e.Context.RespondAsync(null, embed);
 
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                     case NullReferenceException:
                         {
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                     case ArgumentException:
                         {
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                     case CommandNotFoundException:
                         {
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                     default:
                         {
@@ -251,7 +251,7 @@ namespace cat_bot
                             };
 
                             await botchannel.SendMessageAsync(ER);
-                            throw e.Exception;
+                            throw new Exception(e.Exception.Message, e.Exception);
                         }
                 }
             });
@@ -293,7 +293,7 @@ namespace cat_bot
                     // do nothing
                 }
 
-                throw e.Exception;
+                throw new Exception(e.Exception.Message, e.Exception);
             });
 
             return Task.CompletedTask;
