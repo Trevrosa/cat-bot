@@ -1,4 +1,4 @@
-version: 1.1.{build}
+version: 1.1.4.{build}
 environment:
   WEBHOOK_URL: https://canary.discord.com/api/webhooks/823032620681527296/Fwuc8gZssWd7sjVkZhE8qNhySflTyVADXPutNVNezz1GeWh_5aA7blVyv__4H4kztZNw
 before_build:
