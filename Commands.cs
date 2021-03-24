@@ -238,6 +238,12 @@ namespace cat_bot
             }
         }
 
+        [Command("test"), Description("e"), RequireOwner, Hidden]
+        public async Task Test(CommandContext ctx)
+        {
+            await ctx.Client.GetChannelAsync(235252523234);
+        }
+
         [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner]
         public async Task Whitelist(CommandContext ctx, DiscordMember member, string command)
         {
@@ -298,6 +304,8 @@ namespace cat_bot
                 else if (Whitelisted.Any(x => x.Key == command && x.Value.Any(x => x.Equals(member.Id))))
                 {
                     await ctx.RespondAsync($"That person is already whitelisted!");
+
+                    return;
                 }
                 else
                 {
@@ -439,6 +447,8 @@ namespace cat_bot
                 else if (Blacklisted.Any(x => x.Key == command && x.Value.Any(x => x.Equals(member.Id))))
                 {
                     await ctx.RespondAsync($"That person is already blacklisted!");
+
+                    return;
                 }
                 else
                 {
