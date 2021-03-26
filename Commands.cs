@@ -640,7 +640,7 @@ namespace cat_bot
                 await ctx.RespondAsync(new DiscordEmbedBuilder().WithAuthor(deletedsnipemessagevalue.Author.GetFullUsername(),
                     null, deletedsnipemessagevalue.Author.AvatarUrl)
                     .AddField("Content", deletedsnipemessagevalue.Content).AddField("Channel", deletedsnipemessagevalue.Channel.Mention).AddField($"Deleted By", deletedsnipedeletervalue)
-                    .WithFooter($"{deletedsnipemessagevalue.CreationTimestamp.UtcDateTime}").WithColor(DiscordColor.Purple));
+                    .WithFooter($"{deletedsnipemessagevalue.CreationTimestamp.Value.GetHongKongTime()} GMT+8").WithColor(DiscordColor.Purple));
             }
             catch
             {
