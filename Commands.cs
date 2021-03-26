@@ -647,6 +647,25 @@ namespace cat_bot
                 await ctx.RespondAsync("Nothing to snipe.");
             }
         }
+        
+        [Command("coinflip"), Description("Flips a coin.")]
+        public async Task Coinflip(CommandContext ctx)
+        {
+            var num = Random.Next(1, 2);
+
+            switch (num)
+            {
+                case 1:
+                    {
+                        await Context.RespondAsync("Heads!");
+                        break;
+                    }
+                case 2:
+                    {
+                        await Context.RespondAsync("Tails!");
+                        break;
+                    }
+        }
 
         [Command("sudo"), Description("Executes a command as another user.")]
         public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command text to execute.")] string command)
