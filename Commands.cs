@@ -152,7 +152,7 @@ namespace cat_bot
                 var embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
+                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
                     .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
                         null);
 
@@ -230,7 +230,7 @@ namespace cat_bot
                 var embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
+                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
                     .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
                         null);
 
@@ -264,7 +264,7 @@ namespace cat_bot
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Replace($", {member.Id}", "").Replace($"{member.Id}, ", "")).ToList();
+                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"/root/cat bot/blacklisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/blacklisted.txt", lines);
@@ -407,7 +407,7 @@ namespace cat_bot
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Replace($", {member.Id}", "").Replace($"{member.Id}, ", "")).ToList();
+                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"/root/cat bot/whitelisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
@@ -530,6 +530,14 @@ namespace cat_bot
             }
         }
 
+        [Command("commit"), Description("Returns the commit the bot is on.")]
+        public async Task Commit(CommandContext ctx)
+        {
+            var cmd = $"git log -1 \"$env: APPVEYOR_REPO_COMMIT\" --pretty=\" % s\")\"";
+
+            await ctx.RespondAsync(await cmd.Remove("`").RunBashAsync());
+        }
+
         [Command("bash"), Description("Runs a Bash command.")]
         public async Task Bash(CommandContext ctx, [RemainingText] string args = "")
         {
@@ -602,7 +610,7 @@ namespace cat_bot
                 var embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
+                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
                     .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
                         null);
 
@@ -657,7 +665,7 @@ namespace cat_bot
             {
                 await ctx.RespondAsync("Heads!");
             }
-            else 
+            else
             {
                 await ctx.RespondAsync("Tails!");
             }
@@ -684,7 +692,7 @@ namespace cat_bot
                 var embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
+                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
                     .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
                         null);
 
@@ -701,9 +709,9 @@ namespace cat_bot
                 {
                     DiscordMessage msg = ctx.Message;
 
-                    code = code.Replace("```csharp", "");
-                    code = code.Replace("```cs", "");
-                    code = code.Replace("```", "");
+                    code = code.Remove("```csharp");
+                    code = code.Remove("```cs");
+                    code = code.Remove("```");
 
                     DiscordEmbedBuilder embed = new()
                     {
@@ -801,7 +809,7 @@ namespace cat_bot
                     var embed = new DiscordEmbedBuilder()
                         .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                         .WithColor(DiscordColor.Red)
-                        .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
+                        .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
                         .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
                             null);
 
