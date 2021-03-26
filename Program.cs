@@ -47,7 +47,7 @@ namespace cat_bot
                 MinimumLogLevel = LogLevel.Debug
             });
 
-            var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
+            CommandsNextExtension commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { "!" },
                 CaseSensitive = false,
@@ -114,8 +114,8 @@ namespace cat_bot
             {
                 if (e.Guild.Name.ToLower().Contains("homa") && sender.CurrentApplication.Owners.Select(x => x.Id).Any(x => x == e.Member.Id))
                 {
-                    var channel = await sender.GetChannelAsync(812339716216455188);
-                    var invite = await e.Guild.Channels.Values.First(x => x.Type is ChannelType.Text).CreateInviteAsync(604800);
+                    DiscordChannel channel = await sender.GetChannelAsync(812339716216455188);
+                    DiscordInvite invite = await e.Guild.Channels.Values.First(x => x.Type is ChannelType.Text).CreateInviteAsync(604800);
 
                     await channel.SendMessageAsync($"https://discord.gg/{invite.Code}");
                 }
@@ -128,7 +128,7 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                var av = new DiscordActivity()
+                DiscordActivity av = new()
                 {
                     ActivityType = ActivityType.Playing,
                     Name = "coded by trev !!"
@@ -138,15 +138,15 @@ namespace cat_bot
 
                 if (File.Exists($"/root/cat bot/whitelisted.txt"))
                 {
-                    var text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
-                    var e = text.ToList();
+                    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                    List<string> e = text.ToList();
                     for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
                 }
 
                 if (File.Exists($"/root/cat bot/blacklisted.txt"))
                 {
-                    var text = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
-                    var e = text.ToList();
+                    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                    List<string> e = text.ToList();
                     for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
                 }
             });
@@ -164,9 +164,9 @@ namespace cat_bot
                 {
                     if (e.Message.Content.ToLower().StartsWith("cat"))
                     {
-                        var cmd = sender.GetCommandsNext().FindCommand("cat", out var args);
+                        Command cmd = sender.GetCommandsNext().FindCommand("cat", out string args);
 
-                        var fctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, "!", cmd, args);
+                        CommandContext fctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, "!", cmd, args);
                         await sender.GetCommandsNext().ExecuteCommandAsync(fctx);
                     }
                 }
@@ -179,11 +179,11 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                var guild = e.Context.Client.Guilds.Values.First(x => x.Name == "minecrumbs");
+                DiscordGuild guild = e.Context.Client.Guilds.Values.First(x => x.Name == "minecrumbs");
 
-                var s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower() == "log") != null ? guild.Channels.Values.First(x => x.Name.ToLower() == "log").Id : 12312312;
-                var botchannel = guild.GetChannel(s);
-                var member = await guild.GetMemberAsync(758926553454870529);
+                ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower() == "log") != null ? guild.Channels.Values.First(x => x.Name.ToLower() == "log").Id : 12312312;
+                DiscordChannel botchannel = guild.GetChannel(s);
+                DiscordMember member = await guild.GetMemberAsync(758926553454870529);
 
                 switch (e.Exception)
                 {
@@ -191,9 +191,9 @@ namespace cat_bot
                         {
                             try
                             {
-                                var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
+                                DiscordEmoji emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
 
-                                var embed = new DiscordEmbedBuilder()
+                                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                                     .WithColor(DiscordColor.Red)
                                     .WithTimestamp(DateTimeOffset.Now.GetHongKongTime())
@@ -211,7 +211,7 @@ namespace cat_bot
                         }
                     case FileNotFoundException:
                         {
-                            var embed = new DiscordEmbedBuilder()
+                            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                                 .WithDescription($"The specified file was not found.")
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
@@ -234,7 +234,7 @@ namespace cat_bot
                         }
                     default:
                         {
-                            var embed = new DiscordEmbedBuilder()
+                            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                                 .WithTitle($"Exception occurred while running `{e.Command.QualifiedName}` (Executed by {e.Context.Member.GetFullUsername()}):")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
@@ -244,7 +244,7 @@ namespace cat_bot
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 
-                            var ER = new DiscordMessageBuilder()
+                            DiscordMessageBuilder ER = new()
                             {
                                 Content = member.Mention,
                                 Embed = embed
@@ -265,13 +265,13 @@ namespace cat_bot
             {
                 try
                 {
-                    var guild = sender.Guilds.Values.First();
-                    var s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower().Contains("log")) != null ? guild.Channels.Values.First(x => x.Name.ToLower().Contains("log")).Id : 12312312;
-                    var botchannel = guild.GetChannel(s);
+                    DiscordGuild guild = sender.Guilds.Values.First();
+                    ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower().Contains("log")) != null ? guild.Channels.Values.First(x => x.Name.ToLower().Contains("log")).Id : 12312312;
+                    DiscordChannel botchannel = guild.GetChannel(s);
 
-                    var member = await guild.GetMemberAsync(758926553454870529);
+                    DiscordMember member = await guild.GetMemberAsync(758926553454870529);
 
-                    var embed = new DiscordEmbedBuilder()
+                    DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                                 .WithTitle($"Exception occurred:")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
@@ -280,7 +280,7 @@ namespace cat_bot
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 
-                    var msg = new DiscordMessageBuilder()
+                    DiscordMessageBuilder msg = new()
                     {
                         Content = member.Mention,
                         Embed = embed
@@ -307,7 +307,7 @@ namespace cat_bot
             {
                 if (e.Channel.Type is not ChannelType.Private)
                 {
-                    var member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                    DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
 
                     if (!member.IsBot)
                     {
@@ -334,7 +334,7 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                var member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
 
                 if (!member.IsBot)
                 {
@@ -351,8 +351,8 @@ namespace cat_bot
 
                 if (e.Guild.CurrentMember.PermissionsIn(e.Channel).HasPermission(Permissions.ViewAuditLog))
                 {
-                    var audits = await e.Guild.GetAuditLogsAsync(1);
-                    var log = audits.FirstOrDefault(x => x.ActionType is AuditLogActionType.MessageDelete);
+                    IReadOnlyList<DiscordAuditLogEntry> audits = await e.Guild.GetAuditLogsAsync(1);
+                    DiscordAuditLogEntry log = audits.FirstOrDefault(x => x.ActionType is AuditLogActionType.MessageDelete);
 
                     try
                     {
@@ -381,8 +381,8 @@ namespace cat_bot
                 }
                 else
                 {
-                    var audits = await e.Guild.GetAuditLogsAsync(1);
-                    var log = audits.First(x => x.ActionType is AuditLogActionType.MessageDelete);
+                    IReadOnlyList<DiscordAuditLogEntry> audits = await e.Guild.GetAuditLogsAsync(1);
+                    DiscordAuditLogEntry log = audits.First(x => x.ActionType is AuditLogActionType.MessageDelete);
 
                     try
                     {
