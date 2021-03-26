@@ -657,12 +657,12 @@ namespace cat_bot
             {
                 case 1:
                     {
-                        await Context.RespondAsync("Heads!");
+                        await ctx.RespondAsync("Heads!");
                         break;
                     }
                 case 2:
                     {
-                        await Context.RespondAsync("Tails!");
+                        await ctx.RespondAsync("Tails!");
                         break;
                     }
         }
