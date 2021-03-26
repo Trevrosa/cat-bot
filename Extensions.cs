@@ -18,6 +18,11 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static string Remove(this string remove, string replace)
+        {
+            return remove.Replace(replace, "");
+        }
+
         public static DateTime GetHongKongTime(this DateTimeOffset offset)
         {
             return offset.UtcDateTime.AddHours(8);
