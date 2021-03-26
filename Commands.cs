@@ -659,7 +659,7 @@ namespace cat_bot
             }
             else 
             {
-                await ctx.RespondAsync("Tails!")
+                await ctx.RespondAsync("Tails!");
             }
         }
 
