@@ -653,18 +653,13 @@ namespace cat_bot
         {
             var num = Random.Next(1, 10);
 
-            switch (num)
+            if (num.IsDivisible(2))
             {
-                case num.IsDivisible(2):
-                    {
-                        await ctx.RespondAsync("Heads!");
-                        break;
-                    }
-                default:
-                    {
-                        await ctx.RespondAsync("Tails!");
-                        break;
-                    }
+                await ctx.RespondAsync("Heads!");
+            }
+            else 
+            {
+                await ctx.RespondAsync("Tails!")
             }
         }
 
