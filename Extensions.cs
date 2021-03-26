@@ -37,19 +37,19 @@ namespace cat_bot
 
         public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, string content)
         {
-            var member = await guild.GetMemberAsync(user.Id);
+            DiscordMember member = await guild.GetMemberAsync(user.Id);
             await member.TrySendMessageAsync(content);
         }
 
         public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, DiscordEmbed content)
         {
-            var member = await guild.GetMemberAsync(user.Id);
+            DiscordMember member = await guild.GetMemberAsync(user.Id);
             await member.TrySendMessageAsync(content);
         }
 
         public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, DiscordMessageBuilder content)
         {
-            var member = await guild.GetMemberAsync(user.Id);
+            DiscordMember member = await guild.GetMemberAsync(user.Id);
             await member.TrySendMessageAsync(content);
         }
 
@@ -143,7 +143,7 @@ namespace cat_bot
 
         public static void AddRange(this Dictionary<string, string> dict, Dictionary<string, string> dict2)
         {
-            foreach (var E in dict2)
+            foreach (KeyValuePair<string, string> E in dict2)
             {
                 dict.Add(E.Key, E.Value);
             }
@@ -151,7 +151,7 @@ namespace cat_bot
 
         public static void AddRange(this WebHeaderCollection dict, Dictionary<string, string> dict2)
         {
-            foreach (var E in dict2)
+            foreach (KeyValuePair<string, string> E in dict2)
             {
                 dict.Add(E.Key, E.Value);
             }
@@ -159,9 +159,9 @@ namespace cat_bot
 
         public static async Task<string> RunBashAsync(this string cmd)
         {
-            var escapedArgs = cmd.Replace("\"", "\\\"");
+            string escapedArgs = cmd.Replace("\"", "\\\"");
 
-            var process = new Process()
+            Process process = new()
             {
                 StartInfo = new ProcessStartInfo()
                 {
@@ -188,10 +188,10 @@ namespace cat_bot
             for (int i = 0; i < array.Length; i++)
             {
                 MethodInfo method = array[i];
-                var parameters = method.GetParameters();
-                var parameterDescriptions = String.Concat("(", String.Join(", ", method.GetParameters().Select(x => x.ParameterType + " " + x.Name).ToArray()), ")");
+                ParameterInfo[] parameters = method.GetParameters();
+                string parameterDescriptions = String.Concat("(", String.Join(", ", method.GetParameters().Select(x => x.ParameterType + " " + x.Name).ToArray()), ")");
 
-                var methodResult = $"{method.ReturnType} {method.Name}{parameterDescriptions}";
+                string methodResult = $"{method.ReturnType} {method.Name}{parameterDescriptions}";
 
                 result.Add(Regex.Replace(methodResult, @"`\d+", ""));
             }
@@ -207,7 +207,7 @@ namespace cat_bot
             for (int i = 0; i < array.Length; i++)
             {
                 PropertyInfo property = array[i];
-                var propertyResult = $"{property.PropertyType} {property.Name}";
+                string propertyResult = $"{property.PropertyType} {property.Name}";
 
                 result.Add(Regex.Replace(propertyResult, @"`\d+", ""));
             }
@@ -429,8 +429,8 @@ namespace cat_bot
             StringBuilder result = new(size);
             for (int i = 0; i < size; i++)
             {
-                var rnd = BitConverter.ToUInt32(data, i * 4);
-                var idx = rnd % chars.Length;
+                uint rnd = BitConverter.ToUInt32(data, i * 4);
+                long idx = rnd % chars.Length;
                 result.Append(chars[idx]);
             }
 
@@ -450,8 +450,8 @@ namespace cat_bot
             StringBuilder result = new(size);
             for (int i = 0; i < size; i++)
             {
-                var rnd = BitConverter.ToUInt32(data, i * 4);
-                var idx = rnd % chars.Length;
+                uint rnd = BitConverter.ToUInt32(data, i * 4);
+                long idx = rnd % chars.Length;
                 result.Append(chars[idx]);
             }
 
@@ -473,8 +473,8 @@ namespace cat_bot
             StringBuilder result = new(size);
             for (int i = 0; i < size; i++)
             {
-                var rnd = BitConverter.ToUInt32(data, i * 4);
-                var idx = rnd % uniquechars.Length;
+                uint rnd = BitConverter.ToUInt32(data, i * 4);
+                long idx = rnd % uniquechars.Length;
                 result.Append(uniquechars[idx]);
             }
 
@@ -496,8 +496,8 @@ namespace cat_bot
             StringBuilder result = new(size);
             for (int i = 0; i < size; i++)
             {
-                var rnd = BitConverter.ToUInt32(data, i * 4);
-                var idx = rnd % uniquechars.Length;
+                uint rnd = BitConverter.ToUInt32(data, i * 4);
+                long idx = rnd % uniquechars.Length;
                 result.Append(uniquechars[idx]);
             }
 
@@ -506,10 +506,10 @@ namespace cat_bot
 
         public static async Task NukeAsync(this DiscordChannel channel)
         {
-            var pos = channel.Position;
+            int pos = channel.Position;
             await channel.SendMessageAsync($"Nuking {channel.Name}...");
 
-            var qq = await channel.CloneAsync();
+            DiscordChannel qq = await channel.CloneAsync();
             await qq.SendMessageAsync($"Nuked this channel. \nhttps://imgur.com/LIyGeCR");
 
             await channel.DeleteAsync();

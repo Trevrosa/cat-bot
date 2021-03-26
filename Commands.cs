@@ -24,6 +24,7 @@ using static cat_bot.Extensions;
 using static cat_bot.Program;
 using System.Text.RegularExpressions;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.Interactivity;
 
 namespace cat_bot
 {
@@ -46,8 +47,8 @@ namespace cat_bot
                         {
                             case 1:
                                 {
-                                    var ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
-                                    var result = JsonDocument.Parse(ew).RootElement;
+                                    string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
                                     count--;
@@ -58,16 +59,16 @@ namespace cat_bot
                                 {
                                     try
                                     {
-                                        var ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                        var result = JsonDocument.Parse(ew).RootElement;
+                                        string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
+                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                         await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
                                         count--;
                                     }
                                     catch
                                     {
-                                        var ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                        var result = JsonDocument.Parse(ew).RootElement;
+                                        string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                         await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
                                         count--;
@@ -77,8 +78,8 @@ namespace cat_bot
                                 }
                             case 3:
                                 {
-                                    var ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                    var result = JsonDocument.Parse(ew).RootElement;
+                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
                                     count--;
@@ -92,7 +93,7 @@ namespace cat_bot
                 }
                 else if (ctx.Channel.Type is ChannelType.Private)
                 {
-                    var guild = await ctx.User.GetGuildAsync(ctx.Client);
+                    DiscordGuild guild = await ctx.User.GetGuildAsync(ctx.Client);
 
                     while (count != 0)
                     {
@@ -102,8 +103,8 @@ namespace cat_bot
                         {
                             case 1:
                                 {
-                                    var ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
-                                    var result = JsonDocument.Parse(ew).RootElement;
+                                    string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("url")}");
                                     count--;
@@ -114,16 +115,16 @@ namespace cat_bot
                                 {
                                     try
                                     {
-                                        var ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                        var result = JsonDocument.Parse(ew).RootElement;
+                                        string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
+                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                         await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("url")}");
                                         count--;
                                     }
                                     catch
                                     {
-                                        var ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                        var result = JsonDocument.Parse(ew).RootElement;
+                                        string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                         await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("messsage")}");
                                         count--;
@@ -133,8 +134,8 @@ namespace cat_bot
                                 }
                             case 3:
                                 {
-                                    var ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                    var result = JsonDocument.Parse(ew).RootElement;
+                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("messsage")}");
                                     count--;
@@ -147,9 +148,9 @@ namespace cat_bot
             }
             else
             {
-                var emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                var embed = new DiscordEmbedBuilder()
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
                     .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
@@ -169,18 +170,18 @@ namespace cat_bot
                 {
                     string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
-                    var result = JsonDocument.Parse(stin).RootElement;
+                    JsonElement result = JsonDocument.Parse(stin).RootElement;
 
                     try
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
@@ -188,18 +189,18 @@ namespace cat_bot
                 {
                     string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
 
-                    var result = JsonDocument.Parse(stin).RootElement;
+                    JsonElement result = JsonDocument.Parse(stin).RootElement;
 
                     try
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
@@ -207,27 +208,27 @@ namespace cat_bot
                 {
                     string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}&type={type}", ApiKey);
 
-                    var result = JsonDocument.Parse(stin).RootElement;
+                    JsonElement result = JsonDocument.Parse(stin).RootElement;
 
                     try
                     {
                         string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        var msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        var msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
             }
             else
             {
-                var emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                var embed = new DiscordEmbedBuilder()
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
                     .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
@@ -247,7 +248,7 @@ namespace cat_bot
         [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner]
         public async Task Whitelist(CommandContext ctx, DiscordMember member, string command)
         {
-            var cmdsnext = ctx.Client.GetCommandsNext();
+            CommandsNextExtension cmdsnext = ctx.Client.GetCommandsNext();
 
             if (cmdsnext.RegisteredCommands.Any(x => x.Value.QualifiedName == command))
             {
@@ -260,11 +261,11 @@ namespace cat_bot
 
                     if (File.Exists($"/root/cat bot/blacklisted.txt"))
                     {
-                        var lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
+                            List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"/root/cat bot/blacklisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/blacklisted.txt", lines);
@@ -275,20 +276,20 @@ namespace cat_bot
 
                     if (File.Exists($"/root/cat bot/whitelisted.txt"))
                     {
-                        var lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
+                            string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
 
-                            var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                            List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                             File.Delete($"/root/cat bot/whitelisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
                         }
                         else
                         {
-                            var final = lines.Append($"{command}: {member.Id}").ToList();
+                            List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                             File.Delete($"/root/cat bot/whitelisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
@@ -296,7 +297,7 @@ namespace cat_bot
                     }
                     else
                     {
-                        var sw = new StreamWriter($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                        StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
                         await sw.WriteLineAsync($"{command}: {member.Id}");
                         sw.Close();
                     }
@@ -317,20 +318,20 @@ namespace cat_bot
 
                         if (File.Exists($"/root/cat bot/whitelisted.txt"))
                         {
-                            var lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
-                                var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
+                                string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
 
-                                var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                                List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/whitelisted.txt");
                                 await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
                             }
                             else
                             {
-                                var final = lines.Append($"{command}: {member.Id}").ToList();
+                                List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/whitelisted.txt");
                                 await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
@@ -338,7 +339,7 @@ namespace cat_bot
                         }
                         else
                         {
-                            var sw = new StreamWriter($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -351,20 +352,20 @@ namespace cat_bot
 
                         if (File.Exists($"/root/cat bot/whitelisted.txt"))
                         {
-                            var lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
-                                var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
+                                string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", whitelistedValue)}");
 
-                                var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                                List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/whitelisted.txt");
                                 await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
                             }
                             else
                             {
-                                var final = lines.Append($"{command}: {member.Id}").ToList();
+                                List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/whitelisted.txt");
                                 await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
@@ -372,7 +373,7 @@ namespace cat_bot
                         }
                         else
                         {
-                            var sw = new StreamWriter($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -390,7 +391,7 @@ namespace cat_bot
         [Command("blacklist"), Description("Blacklists a person from using a command."), RequireOwner]
         public async Task Blacklist(CommandContext ctx, DiscordMember member, string command)
         {
-            var cmdsnext = ctx.Client.GetCommandsNext();
+            CommandsNextExtension cmdsnext = ctx.Client.GetCommandsNext();
 
             if (cmdsnext.RegisteredCommands.Any(x => x.Value.QualifiedName == command))
             {
@@ -403,11 +404,11 @@ namespace cat_bot
 
                     if (File.Exists($"/root/cat bot/whitelisted.txt"))
                     {
-                        var lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
+                            List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"/root/cat bot/whitelisted.txt");
                             await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
@@ -418,20 +419,20 @@ namespace cat_bot
 
                     if (File.Exists($"/root/cat bot/blacklisted.txt"))
                     {
-                        var lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
-                            var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
+                            string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
 
-                            var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                            List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                             File.Delete($"/root/cat bot/blacklisted.txt");
                             File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
                         }
                         else
                         {
-                            var final = lines.Append($"{command}: {member.Id}").ToList();
+                            List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                             File.Delete($"/root/cat bot/blacklisted.txt");
                             File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
@@ -439,7 +440,7 @@ namespace cat_bot
                     }
                     else
                     {
-                        var sw = new StreamWriter($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                        StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
                         await sw.WriteLineAsync($"{command}: {member.Id}");
                         sw.Close();
                     }
@@ -460,20 +461,20 @@ namespace cat_bot
 
                         if (File.Exists($"/root/cat bot/blacklisted.txt"))
                         {
-                            var lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
-                                var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
+                                string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
 
-                                var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                                List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/blacklisted.txt");
                                 File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
                             }
                             else
                             {
-                                var final = lines.Append($"{command}: {member.Id}").ToList();
+                                List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/blacklisted.txt");
                                 File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
@@ -481,7 +482,7 @@ namespace cat_bot
                         }
                         else
                         {
-                            var sw = new StreamWriter($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -494,20 +495,20 @@ namespace cat_bot
 
                         if (File.Exists($"/root/cat bot/blacklisted.txt"))
                         {
-                            var lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
-                                var oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
+                                string oldvalue = lines.First(x => x.Trim() == $"{command}: {String.Join(", ", blacklistedValue)}");
 
-                                var final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
+                                List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/blacklisted.txt");
                                 File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
                             }
                             else
                             {
-                                var final = lines.Append($"{command}: {member.Id}").ToList();
+                                List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"/root/cat bot/blacklisted.txt");
                                 File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
@@ -515,7 +516,7 @@ namespace cat_bot
                         }
                         else
                         {
-                            var sw = new StreamWriter($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -533,7 +534,7 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on.")]
         public async Task Commit(CommandContext ctx)
         {
-            var cmd = $"git log -1 \"$env: APPVEYOR_REPO_COMMIT\" --pretty=\" % s\")\"";
+            string cmd = $"git log -1 \"$env: APPVEYOR_REPO_COMMIT\" --pretty=\" % s\")\"";
 
             await ctx.RespondAsync(await cmd.Remove("`").RunBashAsync());
         }
@@ -549,7 +550,7 @@ namespace cat_bot
                 }
                 else
                 {
-                    var result = await Extensions.RunBashAsync(args);
+                    string result = await Extensions.RunBashAsync(args);
 
                     if (result.Length > 2000)
                     {
@@ -569,19 +570,19 @@ namespace cat_bot
 
                         await ctx.RespondAsync(newresult);
                         await ctx.RespondAsync($"There is more content in the result. Respond with yes or no for the bot to send a file with the full result.");
-                        var interactivity = ctx.Client.GetInteractivity();
-                        var interact = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.User.Id);
+                        InteractivityExtension interactivity = ctx.Client.GetInteractivity();
+                        InteractivityResult<DiscordMessage> interact = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.User.Id);
 
                         while (!interact.TimedOut)
                         {
                             if (interact.Result.Content.ToLower() == "yes")
                             {
-                                var path = $"/root/temp{Random.Next(23234, 262332)}.txt";
-                                var sw = new StreamWriter(path, false, Encoding.UTF8);
+                                string path = $"/root/temp{Random.Next(23234, 262332)}.txt";
+                                StreamWriter sw = new(path, false, Encoding.UTF8);
                                 await sw.WriteLineAsync(result);
                                 sw.Close();
 
-                                var file = File.OpenRead(path);
+                                FileStream file = File.OpenRead(path);
                                 await ctx.RespondAsync(new DiscordMessageBuilder().WithContent("Here it is:").WithFile(file));
                                 file.Close();
 
@@ -605,9 +606,9 @@ namespace cat_bot
             }
             else
             {
-                var emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                var embed = new DiscordEmbedBuilder()
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
                     .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
@@ -623,7 +624,7 @@ namespace cat_bot
         {
             try
             {
-                var editsnipemessagevalue = EditSnipeMessage.First(x => x.Key.Equals(ctx.Guild)).Value;
+                MessageUpdateEventArgs editsnipemessagevalue = EditSnipeMessage.First(x => x.Key.Equals(ctx.Guild)).Value;
 
                 await ctx.RespondAsync(new DiscordEmbedBuilder().WithAuthor(editsnipemessagevalue.Author.GetFullUsername(),
                     null, editsnipemessagevalue.Author.AvatarUrl)
@@ -642,8 +643,8 @@ namespace cat_bot
         {
             try
             {
-                var deletedsnipemessagevalue = DeletedSnipeMessage.First(x => x.Key.Equals(ctx.Guild)).Value;
-                var deletedsnipedeletervalue = DeletedSnipeDeleter.First(x => x.Key.Equals(ctx.Guild)).Value;
+                DiscordMessage deletedsnipemessagevalue = DeletedSnipeMessage.First(x => x.Key.Equals(ctx.Guild)).Value;
+                string deletedsnipedeletervalue = DeletedSnipeDeleter.First(x => x.Key.Equals(ctx.Guild)).Value;
 
                 await ctx.RespondAsync(new DiscordEmbedBuilder().WithAuthor(deletedsnipemessagevalue.Author.GetFullUsername(),
                     null, deletedsnipemessagevalue.Author.AvatarUrl)
@@ -659,7 +660,7 @@ namespace cat_bot
         [Command("coinflip"), Description("Flips a coin.")]
         public async Task Coinflip(CommandContext ctx)
         {
-            var num = Random.Next(1, 10);
+            int num = Random.Next(1, 10);
 
             if (num.IsDivisible(2))
             {
@@ -676,20 +677,20 @@ namespace cat_bot
         {
             if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
             {
-                var cmd = ctx.CommandsNext.FindCommand(command, out var args);
+                Command cmd = ctx.CommandsNext.FindCommand(command, out string args);
                 if (cmd == null)
                 {
                     await ctx.RespondAsync($"That command doesn't exist!");
                 }
 
-                var fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
+                CommandContext fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
                 await ctx.CommandsNext.ExecuteCommandAsync(fctx);
             }
             else
             {
-                var emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                var embed = new DiscordEmbedBuilder()
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                     .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                     .WithColor(DiscordColor.Red)
                     .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
@@ -741,10 +742,10 @@ namespace cat_bot
                             Description = String.Concat("Compilation failed after ", sw1.ElapsedMilliseconds.ToString(), "ms with ", csc.Length.ToString("#,##0"), " errors."),
                             Color = DiscordColor.Purple
                         };
-                        foreach (var (xd, ls, line) in from Diagnostic xd in csc.Take(5)
-                                                       let ls = xd.Location.GetLineSpan()
-                                                       let line = ls.StartLinePosition.Line - 1
-                                                       select (xd, ls, line))
+                        foreach ((Diagnostic xd, FileLinePositionSpan ls, int line) in from Diagnostic xd in csc.Take(5)
+                                                                                       let ls = xd.Location.GetLineSpan()
+                                                                                       let line = ls.StartLinePosition.Line - 1
+                                                                                       select (xd, ls, line))
                         {
                             embed.AddField(String.Concat("Error at ", line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false);
                         }
@@ -773,7 +774,7 @@ namespace cat_bot
 
                     if (rex != null)
                     {
-                        var message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
+                        DiscordMessage message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
                             String.Concat($"```cs", "\n", Regex.Replace(rex.StackTrace, @"`\d+", ""), "\n", "```"));
 
                         embed = new DiscordEmbedBuilder
@@ -804,9 +805,9 @@ namespace cat_bot
                 }
                 else
                 {
-                    var emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                    DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                    var embed = new DiscordEmbedBuilder()
+                    DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                         .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
                         .WithColor(DiscordColor.Red)
                         .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
