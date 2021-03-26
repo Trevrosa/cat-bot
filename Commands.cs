@@ -651,16 +651,16 @@ namespace cat_bot
         [Command("coinflip"), Description("Flips a coin.")]
         public async Task Coinflip(CommandContext ctx)
         {
-            var num = Random.Next(1, 2);
+            var num = Random.Next(1, 10);
 
             switch (num)
             {
-                case 1:
+                case num.IsDivisible(2):
                     {
                         await ctx.RespondAsync("Heads!");
                         break;
                     }
-                case 2:
+                default:
                     {
                         await ctx.RespondAsync("Tails!");
                         break;
