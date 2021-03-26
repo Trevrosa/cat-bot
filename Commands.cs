@@ -647,7 +647,7 @@ namespace cat_bot
                 await ctx.RespondAsync("Nothing to snipe.");
             }
         }
-        
+
         [Command("coinflip"), Description("Flips a coin.")]
         public async Task Coinflip(CommandContext ctx)
         {
@@ -665,6 +665,7 @@ namespace cat_bot
                         await ctx.RespondAsync("Tails!");
                         break;
                     }
+            }
         }
 
         [Command("sudo"), Description("Executes a command as another user.")]
@@ -832,5 +833,4 @@ namespace cat_bot
             this.Context = ctx;
         }
     }
-}
 }
