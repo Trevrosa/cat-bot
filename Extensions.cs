@@ -177,7 +177,7 @@ namespace cat_bot
             string result = await process.StandardOutput.ReadToEndAsync();
             process.WaitForExit();
             
-            if (String.IsNullOrWhitespace(result))
+            if (String.IsNullOrWhiteSpace(result))
             {
                result = "No result returned";
             }
