@@ -63,6 +63,11 @@ $WEBHOOK_DATA="{
     ""description"": ""**$COMMIT_SUBJECT** $CREDITS"",
     ""fields"": [
       {
+        ""name"": ""Github"",
+        ""value"": ""[`Main Page`](https://github.com/$env:APPVEYOR_REPO_NAME/commit/$env:APPVEYOR_REPO_COMMIT)"",
+        ""inline"": false
+      },
+      {
         ""name"": ""Commit"",
         ""value"": ""[``$($env:APPVEYOR_REPO_COMMIT.substring(0, 7))``](https://github.com/$env:APPVEYOR_REPO_NAME/commit/$env:APPVEYOR_REPO_COMMIT)"",
         ""inline"": false
