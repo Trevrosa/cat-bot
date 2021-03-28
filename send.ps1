@@ -59,6 +59,7 @@ $WEBHOOK_DATA="{
   ""embeds"": [ {
     ""color"": $EMBED_COLOR,
     ""title"": ""Build #$env:APPVEYOR_BUILD_NUMBER $STATUS_MESSAGE"",
+    ""url"": ""https://ci.appveyor.com/project/Trevrosa/cat-bot"",
     ""description"": ""**$COMMIT_SUBJECT** $CREDITS"",
     ""fields"": [
       {
