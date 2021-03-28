@@ -534,8 +534,13 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on.")]
         public async Task Commit(CommandContext ctx)
         {
+            await Extensions.RunBashAsync($"git fetch");
+            await Extensions.RunBashAsync($"cd \"/root/cat bot/\"");
+
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
+            commit = commit.Remove("`").Remove("'");
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
+            shorthash = shorthash.Remove("`").Remove("'");
             string subject = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % s\"");
 
             string author = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % aN\"");
@@ -551,7 +556,7 @@ namespace cat_bot
                 credits = $"{author} authored & {committer} committed";
             }
 
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject.Replace("`", "'")).WithDescription($"{credits}\n[{shorthash}](https://github.com/Trevrosa/cat-bot/commit/{commit})")
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\nCommit [{shorthash}](https://github.com/Trevrosa/cat-bot/commit/{commit})")
                 .WithColor(DiscordColor.SpringGreen));
         }
 
