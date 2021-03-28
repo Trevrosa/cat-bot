@@ -64,7 +64,7 @@ $WEBHOOK_DATA="{
     ""fields"": [
       {
         ""name"": ""Github"",
-        ""value"": ""[`Main Page`](https://github.com/$env:APPVEYOR_REPO_NAME/)"",
+        ""value"": ""[`Main Page`](https://github.com/$env:APPVEYOR_REPO_NAME)"",
         ""inline"": false
       },
       {
