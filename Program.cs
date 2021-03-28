@@ -134,6 +134,14 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
+                foreach (DiscordUser user in sender.CurrentApplication.Owners)
+                {
+                    foreach (KeyValuePair<string, Command> cmd in sender.GetCommandsNext().RegisteredCommands)
+                    {
+                        Whitelisted.Add(cmd.Value.QualifiedName, new() { user.Id });
+                    }
+                }
+
                 //if (File.Exists($"/root/cat bot/whitelisted.txt"))
                 //{
                 //    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
