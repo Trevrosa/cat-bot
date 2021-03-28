@@ -534,9 +534,25 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on.")]
         public async Task Commit(CommandContext ctx)
         {
-            string cmd = $"git log -1 \"$env: APPVEYOR_REPO_COMMIT\" --pretty=\" % s\")\"";
+            string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
+            string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
+            string subject = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % s\"");
 
-            await ctx.RespondAsync(await cmd.Remove("`").RunBashAsync());
+            string author = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % aN\"");
+            string committer = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % cN\"");
+            string credits;
+
+            if (author == committer)
+            {
+                credits = $"{author} authored & committed";
+            }
+            else
+            {
+                credits = $"{author} authored & {committer} committed";
+            }
+
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject.Replace("`", "'")).WithDescription($"{credits}\n[{shorthash}](https://github.com/Trevrosa/cat-bot/commit/{commit})")
+                .WithColor(DiscordColor.SpringGreen));
         }
 
         [Command("bash"), Description("Runs a Bash command.")]
