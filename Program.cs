@@ -99,7 +99,13 @@ namespace cat_bot
             discord.MessageDeleted += Snipe;
             discord.MessageUpdated += EditSnipe;
 
-            await discord.ConnectAsync();
+            DiscordActivity av = new()
+            {
+                ActivityType = ActivityType.Playing,
+                Name = "coded by trev !!"
+            };
+
+            await discord.ConnectAsync(av);
             await Task.Delay(-1);
         }
 
@@ -128,27 +134,19 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordActivity av = new()
-                {
-                    ActivityType = ActivityType.Playing,
-                    Name = "coded by trev !!"
-                };
+                //if (File.Exists($"/root/cat bot/whitelisted.txt"))
+                //{
+                //    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                //    List<string> e = text.ToList();
+                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
+                //}
 
-                await sender.UpdateStatusAsync(av);
-
-                if (File.Exists($"/root/cat bot/whitelisted.txt"))
-                {
-                    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
-                    List<string> e = text.ToList();
-                    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                }
-
-                if (File.Exists($"/root/cat bot/blacklisted.txt"))
-                {
-                    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
-                    List<string> e = text.ToList();
-                    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                }
+                //if (File.Exists($"/root/cat bot/blacklisted.txt"))
+                //{
+                //    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                //    List<string> e = text.ToList();
+                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
+                //}
             });
 
             return Task.CompletedTask;
