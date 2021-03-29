@@ -539,10 +539,10 @@ namespace cat_bot
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
-            string subject = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % s\"");
+            string subject = await Extensions.RunBashAsync($"git log --pretty=format:'%B' -n 1 {commit}");
 
-            string author = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % aN\"");
-            string committer = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % cN\"");
+            string author = await Extensions.RunBashAsync($"git log --pretty=format:'%an' -n 1 {commit}");
+            string committer = await Extensions.RunBashAsync($"git log --pretty=format:'%cn' -n 1 {commit}");
             string credits;
 
             if (author == committer)
