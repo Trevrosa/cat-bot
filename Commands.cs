@@ -162,64 +162,45 @@ namespace cat_bot
         }
 
         [Command("cat"), Description("Cat!!!!!"), Cooldown(4, 2, CooldownBucketType.Channel)]
-        public async Task Cat(CommandContext ctx, string breedoption = "", string type = "")
+        public async Task Cat(CommandContext ctx, string breedoption = "")
         {
             if (!ctx.User.IsBlacklisted(ctx.Command.QualifiedName))
             {
-                if (breedoption == "" && type == "")
+                if (breedoption == "")
                 {
                     string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
-                    JsonElement result = JsonDocument.Parse(stin).RootElement;
+                    JsonElement result = JsonDocument.Parse(stin).RootElement[0];
 
                     try
                     {
-                        string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
+                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
-                else if (breedoption != "" && type == "")
+                else if (breedoption != "")
                 {
                     string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
 
-                    JsonElement result = JsonDocument.Parse(stin).RootElement;
+                    JsonElement result = JsonDocument.Parse(stin).RootElement[0];
 
                     try
                     {
-                        string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
+                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
-                    }
-                }
-                else if (breedoption != "" && type != "")
-                {
-                    string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}&type={type}", ApiKey);
-
-                    JsonElement result = JsonDocument.Parse(stin).RootElement;
-
-                    try
-                    {
-                        string breed = result[0].GetProperty("breeds")[0].GetProperty("name").ToString();
-
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
-                    }
-                    catch
-                    {
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result[0].GetProperty("url"))).WithColor(DiscordColor.Green);
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
                         await ctx.RespondAsync(msg);
                     }
                 }
@@ -692,7 +673,7 @@ namespace cat_bot
         }
 
         [Command("sudo"), Description("Executes a command as another user.")]
-        public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command text to execute.")] string command)
+        public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command with arguments to execute.")] string command)
         {
             if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
             {
