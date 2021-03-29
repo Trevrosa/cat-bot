@@ -535,12 +535,11 @@ namespace cat_bot
         public async Task Commit(CommandContext ctx)
         {
             await Extensions.RunBashAsync($"git fetch");
-            await Extensions.RunBashAsync($"cd \"/root/cat bot/\"");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
-            commit = commit.Remove("`").Remove("'").Remove("'");
+            commit = commit[1..];
+
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
-            shorthash = shorthash.Remove("`").Remove("'").Remove("'");
             string subject = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % s\"");
 
             string author = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % aN\"");
@@ -549,14 +548,14 @@ namespace cat_bot
 
             if (author == committer)
             {
-                credits = $"{author} authored & committed";
+                credits = $"{author.Remove("\n")} authored & committed";
             }
             else
             {
-                credits = $"{author} authored & {committer} committed";
+                credits = $"{author.Remove("\n")} authored & {committer.Remove("\n")} committed";
             }
 
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\nCommit: `[{shorthash}](https://github.com/Trevrosa/cat-bot/commit/{commit})`")
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\nCommit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})")
                 .WithColor(DiscordColor.SpringGreen));
         }
 
