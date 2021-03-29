@@ -170,7 +170,7 @@ namespace cat_bot
                 {
                     if (e.Message.Content.ToLower().StartsWith("cat"))
                     {
-                        Command cmd = sender.GetCommandsNext().FindCommand("cat", out string args);
+                        Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
 
                         CommandContext fctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, "!", cmd, args);
                         await sender.GetCommandsNext().ExecuteCommandAsync(fctx);
