@@ -59,8 +59,14 @@ $WEBHOOK_DATA="{
   ""embeds"": [ {
     ""color"": $EMBED_COLOR,
     ""title"": ""Build #$env:APPVEYOR_BUILD_NUMBER $STATUS_MESSAGE"",
+    ""url"": ""https://ci.appveyor.com/project/Trevrosa/cat-bot"",
     ""description"": ""**$COMMIT_SUBJECT** $CREDITS"",
     ""fields"": [
+      {
+        ""name"": ""Github"",
+        ""value"": ""[``Main Page``](https://github.com/Trevrosa/cat-bot)"",
+        ""inline"": false
+      },
       {
         ""name"": ""Commit"",
         ""value"": ""[``$($env:APPVEYOR_REPO_COMMIT.substring(0, 7))``](https://github.com/$env:APPVEYOR_REPO_NAME/commit/$env:APPVEYOR_REPO_COMMIT)"",
