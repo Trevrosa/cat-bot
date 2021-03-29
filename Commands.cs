@@ -537,7 +537,6 @@ namespace cat_bot
             await Extensions.RunBashAsync($"git fetch");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
-            commit = commit[1..];
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
             string subject = await Extensions.RunBashAsync($"git log -1 \"{commit}\" --pretty=\" % s\"");
