@@ -29,7 +29,7 @@ namespace cat_bot
     {
         private static void Main(string[] args)
         {
-            using (SentrySdk.Init(new SentryOptions() { Dsn = "https://218dee17e1a340e19ca5382bbadeda35@o545219.ingest.sentry.io/5666766", TracesSampleRate = 1 }))
+            using (SentrySdk.Init(new SentryOptions() { Dsn = "https://218dee17e1a340e19ca5382bbadeda35@o545219.ingest.sentry.io/5666766" }))
             {
                 MainAsync().GetAwaiter().GetResult();
             }
