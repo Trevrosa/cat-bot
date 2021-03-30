@@ -73,6 +73,11 @@ $WEBHOOK_DATA="{
         ""inline"": false
       },
       {
+        ""name"": ""Version"",
+        ""value"": ""``$env:APPVEYOR_BUILD_VERSION``"",
+        ""inline"": false
+      },
+      {
         ""name"": ""Branch"",
         ""value"": ""``$env:APPVEYOR_REPO_BRANCH``"",
         ""inline"": false
