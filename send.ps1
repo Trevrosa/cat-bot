@@ -33,10 +33,10 @@ if (!$env:APPVEYOR_REPO_COMMIT) {
   $env:APPVEYOR_REPO_COMMIT="$(git log -1 --pretty="%H")"
 }
 
-$AUTHOR_NAME="$(git log -1 "$env:APPVEYOR_REPO_COMMIT" --pretty="%aN")" 
-$COMMITTER_NAME="$(git log -1 "$env:APPVEYOR_REPO_COMMIT" --pretty="%cN")"
-$COMMIT_SUBJECT="$(git log -1 "$env:APPVEYOR_REPO_COMMIT" --pretty="%s")" -replace "`"", "'"
-$COMMIT_MESSAGE=(git log -1 "$env:APPVEYOR_REPO_COMMIT" --pretty="%b") -replace "`"", "'" | Out-String | ConvertTo-Json
+$AUTHOR_NAME="$(git log --pretty=format:'%aN' -n 1 "$env:APPVEYOR_REPO_COMMIT")"
+$COMMITTER_NAME="$(git log --pretty=format:'%cN' -n 1 "$env:APPVEYOR_REPO_COMMIT")"
+$COMMIT_SUBJECT="$(git log --pretty=format:'%s' -n 1 "$env:APPVEYOR_REPO_COMMIT")" -replace "`"", "'"
+$COMMIT_MESSAGE=(git log --pretty=format:'%b' -n 1 "$env:APPVEYOR_REPO_COMMIT") -replace "`"", "'" | Out-String | ConvertTo-Json
 
 if ($AUTHOR_NAME -eq $COMMITTER_NAME) {
   $CREDITS="`n$AUTHOR_NAME authored & committed" | ConvertTo-Json
