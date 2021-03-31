@@ -187,21 +187,50 @@ namespace cat_bot
                 }
                 else if (breedoption != "")
                 {
-                    string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
-
-                    JsonElement result = JsonDocument.Parse(stin).RootElement[0];
-
                     try
                     {
-                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+                        string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
 
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
+                        JsonElement result = JsonDocument.Parse(stin).RootElement[0];
+
+                        try
+                        {
+                            string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+
+                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                            await ctx.RespondAsync(msg);
+                        }
+                        catch
+                        {
+                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                            await ctx.RespondAsync(msg);
+                        }
                     }
                     catch
                     {
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
+                        if (ctx.Message.Content.Split(" ").ToList().Count > 1)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
+
+                            JsonElement result = JsonDocument.Parse(stin).RootElement[0];
+
+                            try
+                            {
+                                string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+
+                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                                await ctx.RespondAsync(msg);
+                            }
+                            catch
+                            {
+                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                                await ctx.RespondAsync(msg);
+                            }
+                        }
                     }
                 }
             }
@@ -519,7 +548,7 @@ namespace cat_bot
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
             string diff = await Extensions.RunBashAsync($"git status -sb");
-            diff = diff == "## master" ? " [behind 0]" : diff.Split("origin/master").Last();
+            diff = diff == "## master" ? " (behind 0)" : diff.Split("origin/master").Last().Remove("\n").Replace("[", "(").Replace("]", ")");
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
             string subject = await Extensions.RunBashAsync($"git log --pretty=format:'%B' -n 1 {commit}");
