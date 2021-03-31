@@ -519,7 +519,7 @@ namespace cat_bot
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
             string diff = await Extensions.RunBashAsync($"git status -sb");
-            diff = diff.Split("origin/master").Last();
+            diff = diff == "## master" ? " [behind 0]" : diff.Split("origin/master").Last();
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
             string subject = await Extensions.RunBashAsync($"git log --pretty=format:'%B' -n 1 {commit}");
