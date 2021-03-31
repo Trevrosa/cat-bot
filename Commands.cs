@@ -518,6 +518,8 @@ namespace cat_bot
             await Extensions.RunBashAsync($"git fetch");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
+            string diff = await Extensions.RunBashAsync($"git status -sb");
+            diff = diff.Split("origin/master").Last();
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
             string subject = await Extensions.RunBashAsync($"git log --pretty=format:'%B' -n 1 {commit}");
@@ -535,7 +537,8 @@ namespace cat_bot
                 credits = $"{author.Remove("\n")} authored & {committer.Remove("\n")} committed";
             }
 
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\nCommit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})")
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
+                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + diff)
                 .WithColor(DiscordColor.SpringGreen));
         }
 
