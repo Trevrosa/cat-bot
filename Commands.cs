@@ -95,6 +95,7 @@ namespace cat_bot
                 else if (ctx.Channel.Type is ChannelType.Private)
                 {
                     DiscordGuild guild = await ctx.User.GetGuildAsync(ctx.Client);
+                    var member = await guild.GetMemberAsync(ctx.User.Id);
 
                     while (count != 0)
                     {
@@ -107,7 +108,7 @@ namespace cat_bot
                                     string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
-                                    await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("url")}");
+                                    await member.SendMessageAsync($"{result.GetProperty("url")}");
                                     count--;
 
                                     break;
@@ -119,7 +120,7 @@ namespace cat_bot
                                         string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
                                         JsonElement result = JsonDocument.Parse(ew).RootElement;
 
-                                        await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("url")}");
+                                        await member.SendMessageAsync($"{result.GetProperty("url")}");
                                         count--;
                                     }
                                     catch
@@ -127,7 +128,7 @@ namespace cat_bot
                                         string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
                                         JsonElement result = JsonDocument.Parse(ew).RootElement;
 
-                                        await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("messsage")}");
+                                        await member.SendMessageAsync($"{result.GetProperty("messsage")}");
                                         count--;
                                     }
 
@@ -138,7 +139,7 @@ namespace cat_bot
                                     string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
-                                    await ctx.User.SendMessageAsync(guild, $"{result.GetProperty("messsage")}");
+                                    await member.SendMessageAsync($"{result.GetProperty("messsage")}");
                                     count--;
 
                                     break;

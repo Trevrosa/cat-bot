@@ -35,23 +35,7 @@ namespace cat_bot
             return client.Guilds.Values.First(x => x.Members.Values.Any(x => x.Id.Equals(user.Id)));
         }
 
-        public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, string content)
-        {
-            DiscordMember member = await guild.GetMemberAsync(user.Id);
-            await member.TrySendMessageAsync(content);
-        }
-
-        public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, DiscordEmbed content)
-        {
-            DiscordMember member = await guild.GetMemberAsync(user.Id);
-            await member.TrySendMessageAsync(content);
-        }
-
-        public static async Task SendMessageAsync(this DiscordUser user, DiscordGuild guild, DiscordMessageBuilder content)
-        {
-            DiscordMember member = await guild.GetMemberAsync(user.Id);
-            await member.TrySendMessageAsync(content);
-        }
+        #region IsBlack/Whitelisted
 
         public static bool IsBlacklisted(this DiscordUser user, string command)
         {
@@ -141,6 +125,8 @@ namespace cat_bot
             }
         }
 
+        #endregion IsBlack/Whitelisted
+
         public static void AddRange(this Dictionary<string, string> dict, Dictionary<string, string> dict2)
         {
             foreach (KeyValuePair<string, string> E in dict2)
@@ -185,6 +171,8 @@ namespace cat_bot
             return result;
         }
 
+        #region List
+
         public static List<string> ShowMethods(this Type type)
         {
             List<string> result = new();
@@ -219,6 +207,8 @@ namespace cat_bot
 
             return result;
         }
+
+        #endregion List
 
         #region TrySendMessageAsync
 
@@ -342,6 +332,8 @@ namespace cat_bot
             return (x % n) == 0;
         }
 
+        #region BanAsync
+
         public static async Task BanAsync(this DiscordGuild guild, ulong id, string reason)
         {
             await guild.BanMemberAsync(id, 3, reason);
@@ -371,6 +363,8 @@ namespace cat_bot
         {
             await guild.BanMemberAsync(user.Id, 3, null);
         }
+
+        #endregion BanAsync
 
         public static async Task RestartAsync(this DiscordClient client)
         {
@@ -420,6 +414,8 @@ namespace cat_bot
                     }
             }
         }
+
+        #region GetUniqueKey
 
         public static string GetUniqueKey(int size)
         {
@@ -508,6 +504,8 @@ namespace cat_bot
 
             return result.ToString();
         }
+
+        #endregion GetUniqueKey
 
         public static async Task NukeAsync(this DiscordChannel channel)
         {
