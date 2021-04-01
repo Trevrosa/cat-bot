@@ -171,9 +171,9 @@ namespace cat_bot
             return result;
         }
 
-        #region List
+        #region ListThings
 
-        public static List<string> ShowMethods(this Type type)
+        public static List<string> ListMethods(this Type type)
         {
             List<string> result = new();
 
@@ -192,7 +192,7 @@ namespace cat_bot
             return result;
         }
 
-        public static List<string> ShowProperties(this Type type)
+        public static List<string> ListProperties(this Type type)
         {
             List<string> result = new();
 
@@ -208,7 +208,7 @@ namespace cat_bot
             return result;
         }
 
-        #endregion List
+        #endregion ListThings
 
         #region TrySendMessageAsync
 

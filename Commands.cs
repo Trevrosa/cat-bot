@@ -95,7 +95,7 @@ namespace cat_bot
                 else if (ctx.Channel.Type is ChannelType.Private)
                 {
                     DiscordGuild guild = await ctx.User.GetGuildAsync(ctx.Client);
-                    var member = await guild.GetMemberAsync(ctx.User.Id);
+                    DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
 
                     while (count != 0)
                     {
