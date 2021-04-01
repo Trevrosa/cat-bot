@@ -20,11 +20,12 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Collections.Immutable;
-using static cat_bot.Extensions;
-using static cat_bot.Program;
 using System.Text.RegularExpressions;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Interactivity;
+using static cat_bot.MakeTrans;
+using static cat_bot.Extensions;
+using static cat_bot.Program;
 
 namespace cat_bot
 {
@@ -193,22 +194,14 @@ namespace cat_bot
 
                         JsonElement result = JsonDocument.Parse(stin).RootElement[0];
 
-                        try
-                        {
-                            string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                            await ctx.RespondAsync(msg);
-                        }
-                        catch
-                        {
-                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                            await ctx.RespondAsync(msg);
-                        }
+                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                        await ctx.RespondAsync(msg);
                     }
                     catch
                     {
-                        if (ctx.Message.Content.Split(" ").ToList().Count > 1)
+                        if (ctx.Message.Content.ToList().Count(x => x == ' ') > 1)
                         {
                             return;
                         }
@@ -222,7 +215,8 @@ namespace cat_bot
                             {
                                 string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
+                                    .WithColor(DiscordColor.Green);
                                 await ctx.RespondAsync(msg);
                             }
                             catch
@@ -548,7 +542,6 @@ namespace cat_bot
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
             string diff = await Extensions.RunBashAsync($"git status -sb");
-            diff = diff == "## master" ? " (behind 0)" : diff.Split("origin/master").Last().Remove("\n").Replace("[", "(").Replace("]", ")");
 
             string shorthash = await Extensions.RunBashAsync($"git rev-parse --short HEAD");
             string subject = await Extensions.RunBashAsync($"git log --pretty=format:'%B' -n 1 {commit}");
@@ -566,8 +559,11 @@ namespace cat_bot
                 credits = $"{author.Remove("\n")} authored & {committer.Remove("\n")} committed";
             }
 
+            MakeTrans mt = new("[]", "()");
+
             await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
-                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + diff)
+                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" +
+                    diff == "## master" ? " (even with master)" : mt.Translate(diff.Split("origin/master").Last().Remove("\n")))
                 .WithColor(DiscordColor.SpringGreen));
         }
 

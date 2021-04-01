@@ -176,14 +176,14 @@ namespace cat_bot
             process.Start();
             string result = await process.StandardOutput.ReadToEndAsync();
             process.WaitForExit();
-            
+
             if (String.IsNullOrWhiteSpace(result))
             {
-               result = "No result returned";
+                result = "No result returned";
             }
 
             return result;
-        }   
+        }
 
         public static List<string> ShowMethods(this Type type)
         {
@@ -544,5 +544,28 @@ namespace cat_bot
         User,
         Role,
         All
+    }
+
+    public class MakeTrans
+    {
+        private readonly Dictionary<char, char> d;
+
+        public MakeTrans(string intab, string outab)
+        {
+            d = Enumerable.Range(0, intab.Length).ToDictionary(i => intab[i], i => outab[i]);
+        }
+
+        public string Translate(string source)
+        {
+            StringBuilder sb = new(source.Length);
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                char newsource = source[i];
+                sb.Append(d.ContainsKey(newsource) ? d[newsource] : newsource);
+            }
+
+            return sb.ToString();
+        }
     }
 }
