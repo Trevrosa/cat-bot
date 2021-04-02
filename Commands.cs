@@ -561,7 +561,7 @@ namespace cat_bot
                 credits = $"{author.Remove("\n")} authored & {committer.Remove("\n")} committed";
             }
 
-            MakeTrans mt = new("[]", "()");
+            MakeTrans mt = new("[]", "( ");
             string mea;
 
             if (diff.Trim() == "## master")
@@ -571,11 +571,18 @@ namespace cat_bot
             else
             {
                 mea = mt.Translate(diff.Split("origin/master").Last());
+
+                int num = int.Parse(mea.Remove("(behind ").Remove("(ahead "));
+                string ea = num > 1 ? "s" : "";
+
+                mea += $"commit{ea})";
             }
 
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
-                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + mea)
-                .WithColor(DiscordColor.SpringGreen));
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
+                $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + mea)
+                .WithColor(DiscordColor.SpringGreen);
+
+            await ctx.RespondAsync(embed);
         }
 
         [Command("bash"), Description("Runs a Bash command.")]
