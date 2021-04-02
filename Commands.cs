@@ -571,6 +571,7 @@ namespace cat_bot
             else
             {
                 mea = mt.Translate(diff.Split("origin/master").Last());
+                mea = mea.Remove("\n");
 
                 int num = int.Parse(mea.Remove("(behind ").Remove("(ahead "));
                 string ea = num > 1 ? "s" : "";
@@ -578,8 +579,9 @@ namespace cat_bot
                 mea += $"commit{ea})";
             }
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
-                $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + mea)
+            string sea = $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})";
+
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" + sea.Remove("\n") + mea)
                 .WithColor(DiscordColor.SpringGreen);
 
             await ctx.RespondAsync(embed);
