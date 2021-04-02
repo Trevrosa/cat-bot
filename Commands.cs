@@ -538,7 +538,7 @@ namespace cat_bot
             }
         }
 
-        [Command("steal"), Description("Steals an emoji from another server.")]
+        [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]
         public async Task Steal(CommandContext ctx, DiscordEmoji emoji, string name = null)
         {
             string url = emoji.Url.Remove("?v=1");
@@ -547,6 +547,55 @@ namespace cat_bot
             if (String.IsNullOrEmpty(name))
             {
                 name = emoji.Name;
+            }
+
+            WebClient.DownloadFile(url, $"{filename}");
+
+            FileStream stream = File.OpenRead(filename);
+
+            try
+            {
+                DiscordEmoji newemoji = await ctx.Guild.CreateEmojiAsync(name, stream);
+                string newname;
+
+                if (newemoji.IsAnimated)
+                {
+                    newname = $"<a:{newemoji.Name}:{newemoji.Id}>";
+                }
+                else
+                {
+                    newname = $"<:{newemoji.Name}:{newemoji.Id}>";
+                }
+
+                await ctx.RespondAsync($"{newname} has been added!");
+            }
+            catch (UnauthorizedException)
+            {
+                if (ctx.Guild.Owner.Username == "Homa")
+                {
+                    await ctx.RespondAsync("homa give the bot permissions to create emojis");
+                }
+                else
+                {
+                    await ctx.RespondAsync("I don't have the required permissions to create emojis!");
+                }
+            }
+
+            stream.Close();
+            File.Delete(filename);
+        }
+
+        [Command("steal"), Description("Steals an emoji from another server."), Priority(1)]
+        public async Task Steal(CommandContext ctx, string emoji, string name)
+        {
+            string url = emoji.Remove("?v=1");
+            var filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+
+            if (String.IsNullOrEmpty(name))
+            {
+                await ctx.RespondAsync("The emoji name cannot be empty.");
+
+                return;
             }
 
             WebClient.DownloadFile(url, $"{filename}");

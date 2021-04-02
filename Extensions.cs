@@ -178,8 +178,6 @@ namespace cat_bot
 
         public static async Task<string> RunBashAsync(this string cmd)
         {
-            string escapedArgs = cmd.Replace("\"", "\\\"");
-
             Process process = new()
             {
                 StartInfo = new ProcessStartInfo()
