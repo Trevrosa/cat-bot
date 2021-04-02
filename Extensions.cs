@@ -18,6 +18,32 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static IEnumerable<string> SplitInParts(this string s, int partLength)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+            if (partLength <= 0)
+                throw new ArgumentException("Part length has to be positive.", nameof(partLength));
+
+            for (int i = 0; i < s.Length; i += partLength)
+                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        }
+
+        public static async Task<List<DiscordMessage>> SendLongMessageAsync(this DiscordChannel channel, string content)
+        {
+            List<string> strings = content.SplitInParts(2000).ToList();
+            List<DiscordMessage> result = new();
+
+            for (int i = 0; i < strings.Count; i++)
+            {
+                string s = strings[i];
+                var msg = await channel.SendMessageAsync(s);
+                result.Add(msg);
+            }
+
+            return result;
+        }
+
         public static string Remove(this string remove, string replace)
         {
             return remove.Replace(replace, "");
