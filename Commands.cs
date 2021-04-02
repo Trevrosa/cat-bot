@@ -539,10 +539,14 @@ namespace cat_bot
         }
 
         [Command("steal"), Description("Steals an emoji from another server.")]
-        public async Task Steal(CommandContext ctx, DiscordEmoji emoji)
+        public async Task Steal(CommandContext ctx, DiscordEmoji emoji, string name = null)
         {
             string url = emoji.Url.Remove("?v=1");
-            string name = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+
+            if (name is null)
+            {
+                name = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+            }
 
             WebClient.DownloadFile(url, $"{name}");
 
@@ -550,7 +554,8 @@ namespace cat_bot
 
             try
             {
-                await ctx.Guild.CreateEmojiAsync(emoji.Name, stream);
+                DiscordEmoji newemoji = await ctx.Guild.CreateEmojiAsync(emoji.Name, stream);
+                await ctx.RespondAsync($"{newemoji.GetDiscordName()} has been added!");
             }
             catch (UnauthorizedException)
             {
@@ -609,6 +614,8 @@ namespace cat_bot
                     string name = fileNames[i];
                     File.Delete(name);
                 }
+
+                await ctx.RespondAsync($"All emojis from {Formatter.InlineCode(guild.Name)} have been added.");
             }
             else
             {
