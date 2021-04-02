@@ -31,7 +31,8 @@ namespace cat_bot
 {
     public class Commands : BaseCommandModule
     {
-        public static Random Random = new();
+        private static readonly Random Random = new();
+        private static readonly WebClient WebClient = new();
 
         [Command("unholy"), Hidden]
         public async Task Unholy(CommandContext ctx, int count = 1)
@@ -534,6 +535,84 @@ namespace cat_bot
             else
             {
                 await ctx.RespondAsync($"That command doesn't exist!");
+            }
+        }
+
+        [Command("steal"), Description("Steals an emoji from another server.")]
+        public async Task Steal(CommandContext ctx, DiscordEmoji emoji)
+        {
+            string url = emoji.Url.Remove("?v=1");
+            string name = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+
+            WebClient.DownloadFile(url, $"{name}");
+
+            FileStream stream = File.OpenRead(name);
+
+            try
+            {
+                await ctx.Guild.CreateEmojiAsync(emoji.Name, stream);
+            }
+            catch (UnauthorizedException)
+            {
+                if (ctx.Guild.Owner.Username == "Homa")
+                {
+                    await ctx.RespondAsync("homa give the bot permissions to create emojis");
+                }
+                else
+                {
+                    await ctx.RespondAsync("I don't have the required permissions to create emojis!");
+                }
+            }
+
+            stream.Close();
+            File.Delete(name);
+        }
+
+        [Command("stealall"), Description("Steals all emojis from another server.")]
+        public async Task StealAll(CommandContext ctx, DiscordGuild guild)
+        {
+            if (!guild.CurrentMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageEmojis))
+            {
+                if (ctx.Guild.Owner.Username == "Homa")
+                {
+                    await ctx.RespondAsync("homa give the bot permissions to create emojis");
+                }
+                else
+                {
+                    await ctx.RespondAsync("I don't have the required permissions to create emojis!");
+                }
+            }
+            else if (guild is not null)
+            {
+                IReadOnlyList<DiscordGuildEmoji> emojis = await guild.GetEmojisAsync();
+                List<string> fileNames = new();
+
+                for (int i = 0; i < emojis.Count; i++)
+                {
+                    DiscordEmoji emoji = emojis[i];
+
+                    string url = emoji.Url.Remove("?v=1");
+                    string name = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+                    fileNames.Add(name);
+
+                    WebClient.DownloadFile(url, $"{name}");
+
+                    FileStream stream = File.OpenRead(name);
+
+                    await ctx.Guild.CreateEmojiAsync(emoji.Name, stream);
+
+                    stream.Close();
+                }
+
+                for (int i = 0; i < fileNames.Count; i++)
+                {
+                    string name = fileNames[i];
+                    File.Delete(name);
+                }
+            }
+            else
+            {
+                await ctx.RespondAsync($"I'm not in that server!");
             }
         }
 
