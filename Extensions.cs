@@ -24,6 +24,7 @@ namespace cat_bot
             {
                 throw new ArgumentNullException(nameof(s));
             }
+
             if (partLength <= 0)
             {
                 throw new ArgumentException("Part length has to be positive.", nameof(partLength));
