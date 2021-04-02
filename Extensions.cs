@@ -65,7 +65,7 @@ namespace cat_bot
 
         public static async Task<DiscordGuild> GetGuildAsync(this DiscordUser user, DiscordClient client)
         {
-            return client.Guilds.Values.First(x => x.Members.Values.Any(x => x.Id.Equals(user.Id)));
+            return client.Guilds.Values.First(x => x.Members.ContainsKey(user.Id));
         }
 
         #region IsBlack/Whitelisted
