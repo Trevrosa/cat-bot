@@ -26,6 +26,7 @@ using DSharpPlus.Interactivity;
 using static cat_bot.MakeTrans;
 using static cat_bot.Extensions;
 using static cat_bot.Program;
+using DSharpPlus.VoiceNext;
 
 namespace cat_bot
 {
@@ -536,6 +537,56 @@ namespace cat_bot
             {
                 await ctx.RespondAsync($"That command doesn't exist!");
             }
+        }
+
+        [Command("join"), Description("Joins a voice channel.")]
+        public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
+        {
+            if (channel is null)
+            {
+                if (ctx.Member.VoiceState is not null)
+                {
+                    channel = ctx.Member.VoiceState.Channel;
+                    await channel.ConnectAsync();
+                    await channel.SendMessageAsync($"Joined #{channel.Name}!");
+                }
+                else
+                {
+                    await ctx.RespondAsync("You aren't in a channel!");
+                }
+            }
+            else if (channel.Type is not ChannelType.Voice)
+            {
+                await ctx.RespondAsync("I can't join a text channel!");
+            }
+            else
+            {
+                await channel.ConnectAsync();
+                await channel.SendMessageAsync($"Joined #{channel.Name}!");
+            }
+        }
+
+        [Command("play"), Description("Plays an audio file.")]
+        public async Task PlayCommand(CommandContext ctx, string path)
+        {
+            var vnext = ctx.Client.GetVoiceNext();
+            var connection = vnext.GetConnection(ctx.Guild);
+
+            var transmit = connection.GetTransmitSink();
+
+            var pcm = ConvertAudioToPcm(path);
+
+            await pcm.CopyToAsync(transmit);
+            await pcm.DisposeAsync();
+        }
+
+        [Command("leave")]
+        public async Task LeaveCommand(CommandContext ctx)
+        {
+            var vnext = ctx.Client.GetVoiceNext();
+            var connection = vnext.GetConnection(ctx.Guild);
+
+            connection.Disconnect();
         }
 
         [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]

@@ -19,9 +19,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using static cat_bot.Extensions;
 using DSharpPlus.Exceptions;
 using Sentry;
+using DSharpPlus.VoiceNext;
+using static cat_bot.Extensions;
 
 namespace cat_bot
 {
@@ -61,6 +62,8 @@ namespace cat_bot
                 PollBehaviour = PollBehaviour.KeepEmojis,
                 Timeout = TimeSpan.FromHours(3)
             });
+
+            discord.UseVoiceNext();
 
             AppDomain.CurrentDomain.ProcessExit += async (s, ev) =>
             {

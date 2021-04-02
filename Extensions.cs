@@ -18,6 +18,21 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static Stream ConvertAudioToPcm(string path)
+        {
+            var ffmpeg = Process.Start(new ProcessStartInfo
+            {
+                FileName = "ffmpeg",
+                Arguments = $@"-i ""{path}"" -ac 2 -f s16le -ar 48000 pipe:1",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            });
+
+            Stream pcm = ffmpeg.StandardOutput.BaseStream;
+
+            return pcm;
+        }
+
         public static IEnumerable<string> SplitInParts(this string s, int partLength)
         {
             if (String.IsNullOrEmpty(s))
