@@ -544,7 +544,7 @@ namespace cat_bot
             string url = emoji.Url.Remove("?v=1");
             var filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
 
-            if (name is null)
+            if (String.IsNullOrEmpty(name))
             {
                 name = emoji.Name;
             }
@@ -582,7 +582,7 @@ namespace cat_bot
             }
 
             stream.Close();
-            File.Delete(name);
+            File.Delete(filename);
         }
 
         [Command("stealall"), Description("Steals all emojis from another server.")]
