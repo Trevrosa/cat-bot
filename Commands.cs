@@ -542,20 +542,32 @@ namespace cat_bot
         public async Task Steal(CommandContext ctx, DiscordEmoji emoji, string name = null)
         {
             string url = emoji.Url.Remove("?v=1");
+            var filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
 
             if (name is null)
             {
-                name = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+                name = emoji.Name;
             }
 
-            WebClient.DownloadFile(url, $"{name}");
+            WebClient.DownloadFile(url, $"{filename}");
 
-            FileStream stream = File.OpenRead(name);
+            FileStream stream = File.OpenRead(filename);
 
             try
             {
-                DiscordEmoji newemoji = await ctx.Guild.CreateEmojiAsync(emoji.Name, stream);
-                await ctx.RespondAsync($"{newemoji.GetDiscordName()} has been added!");
+                DiscordEmoji newemoji = await ctx.Guild.CreateEmojiAsync(name, stream);
+                string newname;
+
+                if (newemoji.IsAnimated)
+                {
+                    newname = $"<a:{newemoji.Name}:{newemoji.Id}>";
+                }
+                else
+                {
+                    newname = $"<:{newemoji.Name}:{newemoji.Id}>";
+                }
+
+                await ctx.RespondAsync($"{newname} has been added!");
             }
             catch (UnauthorizedException)
             {
