@@ -252,7 +252,7 @@ namespace cat_bot
             await ctx.Client.GetChannelAsync(235252523234);
         }
 
-        [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner]
+        [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner, Hidden]
         public async Task Whitelist(CommandContext ctx, DiscordMember member, string command)
         {
             CommandsNextExtension cmdsnext = ctx.Client.GetCommandsNext();
@@ -395,7 +395,7 @@ namespace cat_bot
             }
         }
 
-        [Command("blacklist"), Description("Blacklists a person from using a command."), RequireOwner]
+        [Command("blacklist"), Description("Blacklists a person from using a command."), RequireOwner, Hidden]
         public async Task Blacklist(CommandContext ctx, DiscordMember member, string command)
         {
             CommandsNextExtension cmdsnext = ctx.Client.GetCommandsNext();
@@ -635,7 +635,7 @@ namespace cat_bot
             }
         }
 
-        [Command("commit"), Description("Returns the commit the bot is on.")]
+        [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
             await Extensions.RunBashAsync($"git fetch");
@@ -685,7 +685,7 @@ namespace cat_bot
             await ctx.RespondAsync(embed);
         }
 
-        [Command("bash"), Description("Runs a Bash command.")]
+        [Command("bash"), Description("Runs a Bash command."), Hidden]
         public async Task Bash(CommandContext ctx, [RemainingText] string args = "")
         {
             if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
@@ -818,7 +818,7 @@ namespace cat_bot
             }
         }
 
-        [Command("sudo"), Description("Executes a command as another user.")]
+        [Command("sudo"), Description("Executes a command as another user."), Hidden]
         public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command with arguments to execute.")] string command)
         {
             if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
@@ -847,7 +847,7 @@ namespace cat_bot
             }
         }
 
-        [Command("eval"), Aliases("evalcs", "cseval", "roslyn"), Description("Evaluates C# code.")]
+        [Command("eval"), Aliases("evalcs", "cseval", "roslyn"), Description("Evaluates C# code."), Hidden]
         public Task EvalCS(CommandContext ctx, [RemainingText, Description("The code to be evaluated.")] string code)
         {
             _ = Task.Run(async () =>
