@@ -20,18 +20,24 @@ namespace cat_bot
     {
         public static IEnumerable<string> SplitInParts(this string s, int partLength)
         {
-            if (s == null)
+            if (String.IsNullOrEmpty(s))
+            {
                 throw new ArgumentNullException(nameof(s));
+            }
             if (partLength <= 0)
+            {
                 throw new ArgumentException("Part length has to be positive.", nameof(partLength));
+            }
 
             for (int i = 0; i < s.Length; i += partLength)
-                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+            {
+                yield return s.Substring(i, partLength);
+            }
         }
 
         public static async Task<List<DiscordMessage>> SendLongMessageAsync(this DiscordChannel channel, string content)
         {
-            List<string> strings = content.SplitInParts(2000).ToList();
+            List<string> strings = content.SplitInParts(DateTime.UtcNow.Year).ToList();
             List<DiscordMessage> result = new();
 
             for (int i = 0; i < strings.Count; i++)
@@ -39,6 +45,8 @@ namespace cat_bot
                 string s = strings[i];
                 var msg = await channel.SendMessageAsync(s);
                 result.Add(msg);
+
+                await Task.Delay(12);
             }
 
             return result;
@@ -46,7 +54,7 @@ namespace cat_bot
 
         public static string Remove(this string remove, string replace)
         {
-            return remove.Replace(replace, "");
+            return remove.Replace(replace, String.Empty);
         }
 
         public static DateTime GetHongKongTime(this DateTimeOffset offset)
@@ -56,8 +64,6 @@ namespace cat_bot
 
         public static async Task<DiscordGuild> GetGuildAsync(this DiscordUser user, DiscordClient client)
         {
-            await Task.Delay(0);
-
             return client.Guilds.Values.First(x => x.Members.Values.Any(x => x.Id.Equals(user.Id)));
         }
 

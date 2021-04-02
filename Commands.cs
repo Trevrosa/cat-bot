@@ -561,10 +561,19 @@ namespace cat_bot
             }
 
             MakeTrans mt = new("[]", "()");
+            string mea;
+
+            if (diff.Trim() == "## master")
+            {
+                mea = " (even with master)";
+            }
+            else
+            {
+                mea = mt.Translate(diff.Split("origin/master").Last());
+            }
 
             await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle(subject).WithDescription($"{credits}\n\n" +
-                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" +
-                    diff == "## master" ? " (even with master)" : mt.Translate(diff.Split("origin/master").Last().Remove("\n")))
+                    $"Commit: [{Formatter.InlineCode(shorthash)}](https://github.com/Trevrosa/cat-bot/commit/{commit})" + mea)
                 .WithColor(DiscordColor.SpringGreen));
         }
 
