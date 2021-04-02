@@ -44,7 +44,7 @@ namespace cat_bot
             for (int i = 0; i < strings.Count; i++)
             {
                 string s = strings[i];
-                var msg = await channel.SendMessageAsync(s);
+                DiscordMessage msg = await channel.SendMessageAsync(s);
                 result.Add(msg);
 
                 await Task.Delay(12);

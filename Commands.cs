@@ -538,11 +538,11 @@ namespace cat_bot
             }
         }
 
-        [Command("steal"), Description("Steals an emoji from another server."), Priority(1)]
+        [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]
         public async Task Steal(CommandContext ctx, DiscordEmoji emoji, string name = null)
         {
             string url = emoji.Url.Remove("?v=1");
-            var filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+            string filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
 
             if (String.IsNullOrEmpty(name))
             {
@@ -585,11 +585,11 @@ namespace cat_bot
             File.Delete(filename);
         }
 
-        [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]
+        [Command("steal"), Description("Steals an emoji from another server."), Priority(1)]
         public async Task Steal(CommandContext ctx, string emoji, string name)
         {
             string url = emoji.Remove("?v=1");
-            var filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
+            string filename = $"/root/temp-{Random.Next(234235, 325323)}.{url.Split(".").Last()}";
 
             if (String.IsNullOrEmpty(name))
             {
