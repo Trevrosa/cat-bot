@@ -50,7 +50,7 @@ namespace cat_bot
 
             CommandsNextExtension commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = new[] { "!" },
+                StringPrefixes = new[] { Prefix },
                 CaseSensitive = false,
                 DmHelp = false,
                 EnableDms = true,
@@ -172,12 +172,29 @@ namespace cat_bot
             {
                 if (e.Author != sender.CurrentUser)
                 {
-                    if (e.Message.Content.ToLower().StartsWith("cat"))
+                    if (e.Message.Content.ToLower().StartsWith("!"))
                     {
-                        Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
+                        Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
-                        CommandContext fctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, "!", cmd, args);
-                        await sender.GetCommandsNext().ExecuteCommandAsync(fctx);
+                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
+
+                        if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
+                        {
+                            await sender.GetCommandsNext().ExecuteCommandAsync(ctx);
+                        }
+                        else
+                        {
+                            DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+
+                            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                                .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
+                                .WithColor(DiscordColor.Red)
+                                .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
+                                .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
+                                    null);
+
+                            await ctx.RespondAsync(null, embed);
+                        }
                     }
                 }
             });
@@ -339,6 +356,7 @@ namespace cat_bot
 
         public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage = new();
         public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter = new();
+        public static string Prefix = GetUniqueKey(30);
 
         private static Task Snipe(DiscordClient sender, MessageDeleteEventArgs e)
         {
