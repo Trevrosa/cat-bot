@@ -20,9 +20,9 @@ namespace cat_bot
     {
         public static Stream ConvertAudioToPcm(string path)
         {
-            var ffmpeg = Process.Start(new ProcessStartInfo
+            Process ffmpeg = Process.Start(new ProcessStartInfo
             {
-                FileName = "ffmpeg",
+                FileName = "/bin/ffmpeg",
                 Arguments = $@"-i ""{path}"" -ac 2 -f s16le -ar 48000 pipe:1",
                 RedirectStandardOutput = true,
                 UseShellExecute = false
@@ -65,7 +65,7 @@ namespace cat_bot
                 await Task.Delay(12);
             }
 
-            return result;
+            return await Task.FromResult(result);
         }
 
         public static string Remove(this string remove, string replace)
@@ -78,9 +78,9 @@ namespace cat_bot
             return offset.UtcDateTime.AddHours(8);
         }
 
-        public static async Task<DiscordGuild> GetGuildAsync(this DiscordUser user, DiscordClient client)
+        public static Task<DiscordGuild> GetGuild(this DiscordUser user, DiscordClient client)
         {
-            return client.Guilds.Values.First(x => x.Members.ContainsKey(user.Id));
+            return Task.FromResult(client.Guilds.Values.First(x => x.Members.ContainsKey(user.Id)));
         }
 
         #region IsBlack/Whitelisted
@@ -216,7 +216,7 @@ namespace cat_bot
                 result = "No result returned";
             }
 
-            return result.Replace("\\ ", " ");
+            return await Task.FromResult(result.Replace("\\ ", " "));
         }
 
         #region ListThings
@@ -344,7 +344,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await reader.ReadToEndAsync();
+                return await Task.FromResult(await reader.ReadToEndAsync());
             }
         }
 
@@ -361,7 +361,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await reader.ReadToEndAsync();
+                return await Task.FromResult(await reader.ReadToEndAsync());
             }
         }
 
@@ -580,7 +580,7 @@ namespace cat_bot
             TimeSpan EndCpuTime = CurrentProcess.TotalProcessorTime;
             Timer.Stop();
 
-            return (EndCpuTime - StartCpuTime).TotalMilliseconds / (Environment.ProcessorCount * Timer.ElapsedMilliseconds);
+            return await Task.FromResult((EndCpuTime - StartCpuTime).TotalMilliseconds / (Environment.ProcessorCount * Timer.ElapsedMilliseconds));
         }
     }
 
