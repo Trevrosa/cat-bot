@@ -20,7 +20,7 @@ jobs:
     - name: Add DSharpPlus
       run: dotnet nuget add source https://nuget.emzi0767.com/api/v3/index.json --name DSharpPlus
     - name: Restore dependencies
-      run: dotnet restore -verbosity quiet
+      run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
