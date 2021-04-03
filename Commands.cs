@@ -23,10 +23,10 @@ using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Interactivity;
+using DSharpPlus.VoiceNext;
 using static cat_bot.MakeTrans;
 using static cat_bot.Extensions;
 using static cat_bot.Program;
-using DSharpPlus.VoiceNext;
 
 namespace cat_bot
 {
@@ -38,211 +38,179 @@ namespace cat_bot
         [Command("unholy"), Hidden]
         public async Task Unholy(CommandContext ctx, int count = 1)
         {
-            if (ctx.User.IsWhitelisted(ctx.Command.QualifiedName))
+            if (ctx.Channel.Type is ChannelType.Text)
             {
-                if (ctx.Channel.Type is ChannelType.Text)
+                while (count != 0)
                 {
-                    while (count != 0)
-                    {
-                        int choice = Random.Next(1, 3);
+                    int choice = Random.Next(1, 3);
 
-                        switch (choice)
-                        {
-                            case 1:
+                    switch (choice)
+                    {
+                        case 1:
+                            {
+                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
+                                count--;
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                try
                                 {
-                                    string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
                                     count--;
-
-                                    break;
                                 }
-                            case 2:
-                                {
-                                    try
-                                    {
-                                        string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                        await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
-                                        count--;
-                                    }
-                                    catch
-                                    {
-                                        string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                        await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
-                                        count--;
-                                    }
-
-                                    break;
-                                }
-                            case 3:
+                                catch
                                 {
                                     string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
                                     count--;
-
-                                    break;
                                 }
-                        }
 
-                        await Task.Delay(200);
+                                break;
+                            }
+                        case 3:
+                            {
+                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
+                                count--;
+
+                                break;
+                            }
                     }
+
+                    await Task.Delay(200);
                 }
-                else if (ctx.Channel.Type is ChannelType.Private)
+            }
+            else if (ctx.Channel.Type is ChannelType.Private)
+            {
+                DiscordGuild guild = await ctx.User.GetGuild(ctx.Client);
+                DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
+
+                while (count != 0)
                 {
-                    DiscordGuild guild = await ctx.User.GetGuildAsync(ctx.Client);
-                    DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
+                    int choice = Random.Next(1, 3);
 
-                    while (count != 0)
+                    switch (choice)
                     {
-                        int choice = Random.Next(1, 3);
+                        case 1:
+                            {
+                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
 
-                        switch (choice)
-                        {
-                            case 1:
+                                await member.SendMessageAsync($"{result.GetProperty("url")}");
+                                count--;
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                try
                                 {
-                                    string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await member.SendMessageAsync($"{result.GetProperty("url")}");
                                     count--;
-
-                                    break;
                                 }
-                            case 2:
-                                {
-                                    try
-                                    {
-                                        string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                        await member.SendMessageAsync($"{result.GetProperty("url")}");
-                                        count--;
-                                    }
-                                    catch
-                                    {
-                                        string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                        JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                        await member.SendMessageAsync($"{result.GetProperty("messsage")}");
-                                        count--;
-                                    }
-
-                                    break;
-                                }
-                            case 3:
+                                catch
                                 {
                                     string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
                                     JsonElement result = JsonDocument.Parse(ew).RootElement;
 
                                     await member.SendMessageAsync($"{result.GetProperty("messsage")}");
                                     count--;
-
-                                    break;
                                 }
-                        }
+
+                                break;
+                            }
+                        case 3:
+                            {
+                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await member.SendMessageAsync($"{result.GetProperty("messsage")}");
+                                count--;
+
+                                break;
+                            }
                     }
                 }
-            }
-            else
-            {
-                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
-
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                    .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                        null);
-
-                await ctx.RespondAsync(null, embed);
             }
         }
 
         [Command("cat"), Description("Cat!!!!!"), Cooldown(4, 2, CooldownBucketType.Channel)]
         public async Task Cat(CommandContext ctx, string breedoption = "")
         {
-            if (!ctx.User.IsBlacklisted(ctx.Command.QualifiedName))
+            if (breedoption == "")
             {
-                if (breedoption == "")
+                string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
+
+                JsonElement result = JsonDocument.Parse(stin).RootElement[0];
+
+                try
                 {
-                    string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
+                    string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+
+                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    await ctx.RespondAsync(msg);
+                }
+                catch
+                {
+                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    await ctx.RespondAsync(msg);
+                }
+            }
+            else if (breedoption != "")
+            {
+                try
+                {
+                    string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
 
                     JsonElement result = JsonDocument.Parse(stin).RootElement[0];
 
-                    try
-                    {
-                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+                    string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
-                    }
-                    catch
-                    {
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
-                    }
+                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    await ctx.RespondAsync(msg);
                 }
-                else if (breedoption != "")
+                catch
                 {
-                    try
+                    if (ctx.Message.Content.ToList().Count(x => x == ' ') > 1)
                     {
-                        string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json&breed_ids={breedoption}", ApiKey);
+                        return;
+                    }
+                    else
+                    {
+                        string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
                         JsonElement result = JsonDocument.Parse(stin).RootElement[0];
 
-                        string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
-
-                        DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                        await ctx.RespondAsync(msg);
-                    }
-                    catch
-                    {
-                        if (ctx.Message.Content.ToList().Count(x => x == ' ') > 1)
+                        try
                         {
-                            return;
+                            string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
+
+                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
+                                .WithColor(DiscordColor.Green);
+                            await ctx.RespondAsync(msg);
                         }
-                        else
+                        catch
                         {
-                            string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
-
-                            JsonElement result = JsonDocument.Parse(stin).RootElement[0];
-
-                            try
-                            {
-                                string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
-
-                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
-                                    .WithColor(DiscordColor.Green);
-                                await ctx.RespondAsync(msg);
-                            }
-                            catch
-                            {
-                                DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                                await ctx.RespondAsync(msg);
-                            }
+                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                            await ctx.RespondAsync(msg);
                         }
                     }
                 }
-            }
-            else
-            {
-                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
-
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                    .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                        null);
-
-                await ctx.RespondAsync(null, embed);
             }
         }
 
@@ -547,44 +515,65 @@ namespace cat_bot
                 if (ctx.Member.VoiceState is not null)
                 {
                     channel = ctx.Member.VoiceState.Channel;
+
                     await channel.ConnectAsync();
-                    await channel.SendMessageAsync($"Joined #{channel.Name}!");
+                    await channel.SendMessageAsync($"Joined {channel.Mention}!");
                 }
                 else
                 {
-                    await ctx.RespondAsync("You aren't in a channel!");
+                    await ctx.RespondAsync("You aren't in a voice channel!");
                 }
             }
-            else if (channel.Type is not ChannelType.Voice)
+            else if (channel.Type is ChannelType.Voice)
             {
-                await ctx.RespondAsync("I can't join a text channel!");
+                await channel.ConnectAsync();
+                await channel.SendMessageAsync($"Joined {channel.Mention}!");
             }
             else
             {
-                await channel.ConnectAsync();
-                await channel.SendMessageAsync($"Joined #{channel.Name}!");
+                await ctx.RespondAsync("I can't join a text channel!");
             }
         }
 
         [Command("play"), Description("Plays an audio file.")]
         public async Task PlayCommand(CommandContext ctx, string path)
         {
-            var vnext = ctx.Client.GetVoiceNext();
-            var connection = vnext.GetConnection(ctx.Guild);
+            if (ctx.Guild.CurrentMember.VoiceState is null)
+            {
+                await ctx.RespondAsync($"I'm not in a voice channel!");
+            }
+            else
+            {
+                VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
+                VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
-            var transmit = connection.GetTransmitSink();
+                VoiceTransmitSink transmit = connection.GetTransmitSink();
 
-            var pcm = ConvertAudioToPcm(path);
+                Stream pcm = ConvertAudioToPcm(path);
 
-            await pcm.CopyToAsync(transmit);
-            await pcm.DisposeAsync();
+                await pcm.CopyToAsync(transmit);
+                await pcm.DisposeAsync();
+
+                string name = String.Empty;
+
+                if (path.Contains("/") && !path.Contains("\\"))
+                {
+                    name = path.Split("/").Last();
+                }
+                else if (path.Contains("\\") && !path.Contains("/"))
+                {
+                    name = path.Split("\\").Last();
+                }
+
+                await ctx.RespondAsync($"Playing {Formatter.InlineCode(name)} in {connection.TargetChannel.Mention}!");
+            }
         }
 
-        [Command("leave")]
+        [Command("leave"), Description("Leaves the current channel.")]
         public async Task LeaveCommand(CommandContext ctx)
         {
-            var vnext = ctx.Client.GetVoiceNext();
-            var connection = vnext.GetConnection(ctx.Guild);
+            VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
+            VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
             connection.Disconnect();
         }
@@ -685,7 +674,7 @@ namespace cat_bot
             File.Delete(filename);
         }
 
-        [Command("stealall"), Description("Steals all emojis from another server.")]
+        [Command("stealall"), Description("Steals all emojis from another server."), RequireOwner, Hidden]
         public async Task StealAll(CommandContext ctx, DiscordGuild guild)
         {
             if (!guild.CurrentMember.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageEmojis))
@@ -788,80 +777,64 @@ namespace cat_bot
         [Command("bash"), Description("Runs a Bash command."), Hidden]
         public async Task Bash(CommandContext ctx, [RemainingText] string args = "")
         {
-            if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
+            if (String.IsNullOrEmpty(args))
             {
-                if (String.IsNullOrEmpty(args))
-                {
-                    await ctx.RespondAsync("You need to specify a command to run in Bash.");
-                }
-                else
-                {
-                    string result = await Extensions.RunBashAsync(args);
-
-                    if (result.Length > 2000)
-                    {
-                        string newresult = "";
-                        int here = 0;
-
-                        char[] array = result.ToCharArray();
-                        for (int i = 0; i < array.Length; i++)
-                        {
-                            char character = array[i];
-                            if (here < 2000)
-                            {
-                                newresult += character;
-                                here++;
-                            }
-                        }
-
-                        await ctx.RespondAsync(newresult);
-                        await ctx.RespondAsync($"There is more content in the result. Respond with yes or no for the bot to send a file with the full result.");
-                        InteractivityExtension interactivity = ctx.Client.GetInteractivity();
-                        InteractivityResult<DiscordMessage> interact = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.User.Id);
-
-                        while (!interact.TimedOut)
-                        {
-                            if (interact.Result.Content.ToLower() == "yes")
-                            {
-                                string path = $"/root/temp{Random.Next(23234, 262332)}.txt";
-                                StreamWriter sw = new(path, false, Encoding.UTF8);
-                                await sw.WriteLineAsync(result);
-                                sw.Close();
-
-                                FileStream file = File.OpenRead(path);
-                                await ctx.RespondAsync(new DiscordMessageBuilder().WithContent("Here it is:").WithFile(file));
-                                file.Close();
-
-                                File.Delete(path);
-
-                                break;
-                            }
-                            else if (interact.Result.Content.ToLower() == "no")
-                            {
-                                await ctx.RespondAsync("Okay.");
-
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        await ctx.RespondAsync(result);
-                    }
-                }
+                await ctx.RespondAsync("You need to specify a command to run in Bash.");
             }
             else
             {
-                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                string result = await Extensions.RunBashAsync(args);
 
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                    .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                        null);
+                if (result.Length > 2000)
+                {
+                    string newresult = "";
+                    int here = 0;
 
-                await ctx.RespondAsync(null, embed);
+                    char[] array = result.ToCharArray();
+                    for (int i = 0; i < array.Length; i++)
+                    {
+                        char character = array[i];
+                        if (here < 2000)
+                        {
+                            newresult += character;
+                            here++;
+                        }
+                    }
+
+                    await ctx.RespondAsync(newresult);
+                    await ctx.RespondAsync($"There is more content in the result. Respond with yes or no for the bot to send a file with the full result.");
+                    InteractivityExtension interactivity = ctx.Client.GetInteractivity();
+                    InteractivityResult<DiscordMessage> interact = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.User.Id);
+
+                    while (!interact.TimedOut)
+                    {
+                        if (interact.Result.Content.ToLower() == "yes")
+                        {
+                            string path = $"/root/temp{Random.Next(23234, 262332)}.txt";
+                            StreamWriter sw = new(path, false, Encoding.UTF8);
+                            await sw.WriteLineAsync(result);
+                            sw.Close();
+
+                            FileStream file = File.OpenRead(path);
+                            await ctx.RespondAsync(new DiscordMessageBuilder().WithContent("Here it is:").WithFile(file));
+                            file.Close();
+
+                            File.Delete(path);
+
+                            break;
+                        }
+                        else if (interact.Result.Content.ToLower() == "no")
+                        {
+                            await ctx.RespondAsync("Okay.");
+
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    await ctx.RespondAsync(result);
+                }
             }
         }
 
@@ -921,30 +894,14 @@ namespace cat_bot
         [Command("sudo"), Description("Executes a command as another user."), Hidden]
         public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command with arguments to execute.")] string command)
         {
-            if (ctx.Member.IsWhitelisted(ctx.Command.QualifiedName))
+            Command cmd = ctx.CommandsNext.FindCommand(command, out string args);
+            if (cmd == null)
             {
-                Command cmd = ctx.CommandsNext.FindCommand(command, out string args);
-                if (cmd == null)
-                {
-                    await ctx.RespondAsync($"That command doesn't exist!");
-                }
-
-                CommandContext fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
-                await ctx.CommandsNext.ExecuteCommandAsync(fctx);
+                await ctx.RespondAsync($"That command doesn't exist!");
             }
-            else
-            {
-                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                    .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                        null);
-
-                await ctx.RespondAsync(null, embed);
-            }
+            CommandContext fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
+            await ctx.CommandsNext.ExecuteCommandAsync(fctx);
         }
 
         [Command("eval"), Aliases("evalcs", "cseval", "roslyn"), Description("Evaluates C# code."), Hidden]
@@ -952,116 +909,100 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                if (ctx.User.IsWhitelisted(ctx.Command.QualifiedName))
+                DiscordMessage msg = ctx.Message;
+
+                code = code.Remove("```csharp");
+                code = code.Remove("```cs");
+                code = code.Remove("```");
+
+                DiscordEmbedBuilder embed = new()
                 {
-                    DiscordMessage msg = ctx.Message;
+                    Title = "Evaluating...",
+                    Color = DiscordColor.Purple
+                };
 
-                    code = code.Remove("```csharp");
-                    code = code.Remove("```cs");
-                    code = code.Remove("```");
+                msg = await ctx.RespondAsync("", embed: embed.Build());
 
-                    DiscordEmbedBuilder embed = new()
-                    {
-                        Title = "Evaluating...",
-                        Color = DiscordColor.Purple
-                    };
+                EvaluationEnvironment globals = new(ctx);
+                ScriptOptions sopts = ScriptOptions.Default
+                    .AddImports("System", "System.Collections.Generic", "System.Diagnostics", "System.Linq", "System.Net.Http", "System.Text", "System.Threading.Tasks", "DSharpPlus",
+                        "DSharpPlus.CommandsNext", "DSharpPlus.Entities", "DSharpPlus.EventArgs", "DSharpPlus.Exceptions", "System.IO", "cat_bot", "cat_bot.Extensions",
+                        "System.Text.RegularExpressions", "System.Text.Json")
+                    .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
 
-                    msg = await ctx.RespondAsync("", embed: embed.Build());
+                Stopwatch sw1 = Stopwatch.StartNew();
+                Script<object> cs = CSharpScript.Create(code, sopts, typeof(EvaluationEnvironment));
+                ImmutableArray<Diagnostic> csc = cs.Compile();
+                sw1.Stop();
 
-                    EvaluationEnvironment globals = new(ctx);
-                    ScriptOptions sopts = ScriptOptions.Default
-                        .AddImports("System", "System.Collections.Generic", "System.Diagnostics", "System.Linq", "System.Net.Http", "System.Text", "System.Threading.Tasks", "DSharpPlus",
-                            "DSharpPlus.CommandsNext", "DSharpPlus.Entities", "DSharpPlus.EventArgs", "DSharpPlus.Exceptions", "System.IO", "cat_bot", "cat_bot.Extensions",
-                            "System.Text.RegularExpressions", "System.Text.Json")
-                        .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
-
-                    Stopwatch sw1 = Stopwatch.StartNew();
-                    Script<object> cs = CSharpScript.Create(code, sopts, typeof(EvaluationEnvironment));
-                    ImmutableArray<Diagnostic> csc = cs.Compile();
-                    sw1.Stop();
-
-                    if (csc.Any(xd => xd.Severity == DiagnosticSeverity.Error))
-                    {
-                        embed = new DiscordEmbedBuilder
-                        {
-                            Title = "Compilation failed",
-                            Description = String.Concat("Compilation failed after ", sw1.ElapsedMilliseconds.ToString(), "ms with ", csc.Length.ToString("#,##0"), " errors."),
-                            Color = DiscordColor.Purple
-                        };
-                        foreach ((Diagnostic xd, FileLinePositionSpan ls, int line) in from Diagnostic xd in csc.Take(5)
-                                                                                       let ls = xd.Location.GetLineSpan()
-                                                                                       let line = ls.StartLinePosition.Line - 1
-                                                                                       select (xd, ls, line))
-                        {
-                            embed.AddField(String.Concat("Error at ", line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false);
-                        }
-
-                        if (csc.Length > 5)
-                        {
-                            embed.AddField("Some errors ommited", String.Concat((csc.Length - 5).ToString("#,##0"), " more errors not displayed"), false);
-                        }
-                        await msg.ModifyAsync(embed: embed.Build());
-                        return;
-                    }
-
-                    Exception rex = null;
-                    ScriptState<object> css = null;
-                    Stopwatch sw2 = Stopwatch.StartNew();
-                    try
-                    {
-                        css = await cs.RunAsync(globals);
-                        rex = css.Exception;
-                    }
-                    catch (Exception ex)
-                    {
-                        rex = ex;
-                    }
-                    sw2.Stop();
-
-                    if (rex != null)
-                    {
-                        DiscordMessage message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
-                            String.Concat($"```cs", "\n", Regex.Replace(rex.StackTrace, @"`\d+", ""), "\n", "```"));
-
-                        embed = new DiscordEmbedBuilder
-                        {
-                            Title = "Execution failed",
-                            Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message, $"`. \n\nGo to {message.JumpLink} for more info."),
-                            Color = DiscordColor.Purple,
-                        };
-                        await msg.ModifyAsync(embed: embed.Build());
-                        return;
-                    }
-
-                    // execution succeeded
+                if (csc.Any(xd => xd.Severity == DiagnosticSeverity.Error))
+                {
                     embed = new DiscordEmbedBuilder
                     {
-                        Title = "Evaluation successful",
+                        Title = "Compilation failed",
+                        Description = String.Concat("Compilation failed after ", sw1.ElapsedMilliseconds.ToString(), "ms with ", csc.Length.ToString("#,##0"), " errors."),
+                        Color = DiscordColor.Purple
+                    };
+                    foreach ((Diagnostic xd, FileLinePositionSpan ls, int line) in from Diagnostic xd in csc.Take(5)
+                                                                                   let ls = xd.Location.GetLineSpan()
+                                                                                   let line = ls.StartLinePosition.Line - 1
+                                                                                   select (xd, ls, line))
+                    {
+                        embed.AddField(String.Concat("Error at ", line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false);
+                    }
+
+                    if (csc.Length > 5)
+                    {
+                        embed.AddField("Some errors ommited", String.Concat((csc.Length - 5).ToString("#,##0"), " more errors not displayed"), false);
+                    }
+                    await msg.ModifyAsync(embed: embed.Build());
+                    return;
+                }
+
+                Exception rex = null;
+                ScriptState<object> css = null;
+                Stopwatch sw2 = Stopwatch.StartNew();
+                try
+                {
+                    css = await cs.RunAsync(globals);
+                    rex = css.Exception;
+                }
+                catch (Exception ex)
+                {
+                    rex = ex;
+                }
+                sw2.Stop();
+
+                if (rex != null)
+                {
+                    DiscordMessage message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
+                        String.Concat($"```cs", "\n", Regex.Replace(rex.StackTrace, @"`\d+", ""), "\n", "```"));
+
+                    embed = new DiscordEmbedBuilder
+                    {
+                        Title = "Execution failed",
+                        Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message, $"`. \n\nGo to {message.JumpLink} for more info."),
                         Color = DiscordColor.Purple,
                     };
-
-                    embed.AddField("Result", css.ReturnValue != null ? css.ReturnValue.ToString() : "No value returned", false)
-                        .AddField("Compilation time", String.Concat(sw1.ElapsedMilliseconds.ToString(), "ms"), true)
-                        .AddField("Execution time", String.Concat(sw2.ElapsedMilliseconds.ToString(), "ms"), true);
-
-                    if (css.ReturnValue != null)
-                        embed.AddField("Return type", css.ReturnValue.GetType().ToString(), true);
-
                     await msg.ModifyAsync(embed: embed.Build());
+                    return;
                 }
-                else
+
+                // execution succeeded
+                embed = new DiscordEmbedBuilder
                 {
-                    DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                    Title = "Evaluation successful",
+                    Color = DiscordColor.Purple,
+                };
 
-                    DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                        .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                        .WithColor(DiscordColor.Red)
-                        .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                        .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                            null);
+                embed.AddField("Result", css.ReturnValue != null ? css.ReturnValue.ToString() : "No value returned", false)
+                    .AddField("Compilation time", String.Concat(sw1.ElapsedMilliseconds.ToString(), "ms"), true)
+                    .AddField("Execution time", String.Concat(sw2.ElapsedMilliseconds.ToString(), "ms"), true);
 
-                    await ctx.RespondAsync(null, embed);
-                }
+                if (css.ReturnValue != null)
+                    embed.AddField("Return type", css.ReturnValue.GetType().ToString(), true);
+
+                await msg.ModifyAsync(embed: embed.Build());
             });
 
             return Task.CompletedTask;

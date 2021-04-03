@@ -95,7 +95,8 @@ namespace cat_bot
 
             commands.CommandErrored += CommandErrored;
             discord.ClientErrored += ClientError;
-            discord.MessageCreated += Cat;
+
+            discord.MessageCreated += RunCommand;
             discord.Ready += Ready;
             discord.GuildMemberRemoved += Reinvite;
 
@@ -165,7 +166,7 @@ namespace cat_bot
 
         public static readonly Dictionary<string, string> ApiKey = new() { { "x-api-key", "f1b5f4e7-f4dd-4014-b9be-e33fc0b94da1" } };
 
-        private static Task Cat(DiscordClient sender, MessageCreateEventArgs e)
+        private static Task RunCommand(DiscordClient sender, MessageCreateEventArgs e)
         {
             _ = Task.Run(async () =>
             {
