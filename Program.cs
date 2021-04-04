@@ -27,6 +27,7 @@ using Serilog.Exceptions;
 using Serilog.Events;
 using System.Diagnostics;
 using static cat_bot.Extensions;
+using LibGit2Sharp;
 
 namespace cat_bot
 {
@@ -58,7 +59,7 @@ namespace cat_bot
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
-                MinimumLogLevel = LogLevel.Debug,
+                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
                 LoggerFactory = logFactory
             });
 
@@ -357,6 +358,7 @@ namespace cat_bot
         public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage = new();
         public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter = new();
         public static string Prefix = GetUniqueKey(30);
+        public static Repository Repo = new("/root/cat bot/.git/");
 
         private static Task Snipe(DiscordClient sender, MessageDeleteEventArgs e)
         {

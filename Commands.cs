@@ -27,6 +27,7 @@ using DSharpPlus.VoiceNext;
 using static cat_bot.MakeTrans;
 using static cat_bot.Extensions;
 using static cat_bot.Program;
+using LibGit2Sharp;
 
 namespace cat_bot
 {
@@ -726,8 +727,14 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
+            Repository repo = Repo;
+
             await Extensions.RunBashAsync($@"cd ""/root/cat bot/""");
-            await Extensions.RunBashAsync($"git fetch");
+
+            //git fetch
+            Remote remote = repo.Network.Remotes["origin"];
+            List<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification).ToList();
+            LibGit2Sharp.Commands.Fetch(repo, remote.Name, refSpecs, null, _ = String.Empty);
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
             string diff = await Extensions.RunBashAsync($"git status -sb");
