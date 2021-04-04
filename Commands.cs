@@ -726,6 +726,7 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
+            await Extensions.RunBashAsync($@"cd ""/root/cat bot/""");
             await Extensions.RunBashAsync($"git fetch");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");

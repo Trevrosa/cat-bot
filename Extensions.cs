@@ -284,7 +284,7 @@ namespace cat_bot
                 result = "No result returned";
             }
 
-            return await Task.FromResult(result.Replace("\\ ", " "));
+            return await Task.FromResult(result);
         }
 
         #region ListThings
