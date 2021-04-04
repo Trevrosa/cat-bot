@@ -22,7 +22,11 @@ using System.Timers;
 using DSharpPlus.Exceptions;
 using Sentry;
 using DSharpPlus.VoiceNext;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Events;
 using static cat_bot.Extensions;
+using System.Diagnostics;
 
 namespace cat_bot
 {
@@ -40,12 +44,22 @@ namespace cat_bot
         {
             #region config
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.WithExceptionDetails()
+                .WriteTo.Console()
+                .WriteTo.File("cat.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
+
             discord = new DiscordClient(new DiscordConfiguration()
             {
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
-                MinimumLogLevel = LogLevel.Debug
+                MinimumLogLevel = LogLevel.Debug,
+                LoggerFactory = logFactory
             });
 
             CommandsNextExtension commands = discord.UseCommandsNext(new CommandsNextConfiguration()
@@ -265,8 +279,8 @@ namespace cat_bot
                                 .WithTitle($"Exception occurred while running `{e.Command.QualifiedName}` (Executed by {e.Context.Member.GetFullUsername()}):")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
-                                .AddField("Inner Exception", e.Exception.InnerException != null ? e.Exception.InnerException.ToString() : "N/A")
-                                .AddField("Stack Trace", e.Exception.StackTrace != null ? Regex.Replace(e.Exception.StackTrace.Replace("Jess", "trev"), @"`\d+", "") : "N/A")
+                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ? e.Exception.InnerException.Demystify().ToString() : "N/A")
+                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ? e.Exception.Demystify().StackTrace.Replace("Jess", "trev") : "N/A")
                                 .AddField("Jump Link", e.Context.Message.JumpLink.ToString())
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
@@ -302,8 +316,8 @@ namespace cat_bot
                                 .WithTitle($"Exception occurred:")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
-                                .AddField("Inner Exception", e.Exception.InnerException != null ? e.Exception.InnerException.ToString() : "N/A")
-                                .AddField("Stack Trace", e.Exception.StackTrace != null ? e.Exception.StackTrace.Replace("Jess", "trev") : "N/A")
+                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ? e.Exception.InnerException.Demystify().ToString() : "N/A")
+                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ? e.Exception.Demystify().StackTrace.Replace("Jess", "trev") : "N/A")
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 
