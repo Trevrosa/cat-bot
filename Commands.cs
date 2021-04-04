@@ -217,8 +217,7 @@ namespace cat_bot
         [Command("test"), Description("e"), RequireOwner, Hidden]
         public async Task Test(CommandContext ctx)
         {
-            await ctx.Channel.GetMessageAsync(235315152512);
-            await ctx.Client.GetChannelAsync(235252523234);
+            Extensions.Throw(null).Wait();
         }
 
         [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner, Hidden]
@@ -901,7 +900,7 @@ namespace cat_bot
             }
 
             CommandContext fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
-            await ctx.CommandsNext.ExecuteCommandAsync(fctx);
+            await cmd.RunCommandAsync(fctx);
         }
 
         [Command("eval"), Aliases("evalcs", "cseval", "roslyn"), Description("Evaluates C# code."), Hidden]

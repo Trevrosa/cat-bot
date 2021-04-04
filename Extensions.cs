@@ -18,6 +18,37 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static async Task RunCommandAsync(this Command cmd, CommandContext ctx)
+        {
+            if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
+            {
+                await Program.discord.GetCommandsNext().ExecuteCommandAsync(ctx);
+            }
+            else
+            {
+                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
+                    .WithColor(DiscordColor.Red)
+                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
+                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
+                        null);
+
+                await ctx.RespondAsync(null, embed);
+            }
+        }
+
+        public static async Task Throw(this string value)
+        {
+            if (value == null)
+            {
+                throw new InvalidOperationException("message");
+            }
+
+            await Task.Yield();
+        }
+
         public static Stream ConvertAudioToPcm(string path)
         {
             Process ffmpeg = Process.Start(new ProcessStartInfo

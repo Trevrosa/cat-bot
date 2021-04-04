@@ -192,23 +192,7 @@ namespace cat_bot
 
                         CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
 
-                        if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
-                        {
-                            await sender.GetCommandsNext().ExecuteCommandAsync(ctx);
-                        }
-                        else
-                        {
-                            DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
-
-                            DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                                .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                                .WithColor(DiscordColor.Red)
-                                .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                                .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                                    null);
-
-                            await ctx.RespondAsync(null, embed);
-                        }
+                        await cmd.RunCommandAsync(ctx);
                     }
                 }
             });
