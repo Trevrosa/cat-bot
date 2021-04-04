@@ -48,12 +48,12 @@ namespace cat_bot
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
                 .WriteTo.Console()
-                .WriteTo.File("cat.log", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
 
-            discord = new DiscordClient(new DiscordConfiguration()
+            DiscordClient discord = new(new DiscordConfiguration()
             {
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
@@ -110,7 +110,7 @@ namespace cat_bot
             commands.CommandErrored += CommandErrored;
             discord.ClientErrored += ClientError;
 
-            discord.MessageCreated += RunCommand;
+            discord.MessageCreated += CommandHandler;
             discord.Ready += Ready;
             discord.GuildMemberRemoved += Reinvite;
 
@@ -126,8 +126,6 @@ namespace cat_bot
             await discord.ConnectAsync(av);
             await Task.Delay(-1);
         }
-
-        public static DiscordClient discord;
 
         public static Dictionary<string, List<ulong>> Whitelisted = new();
         public static Dictionary<string, List<ulong>> Blacklisted = new();
@@ -180,7 +178,7 @@ namespace cat_bot
 
         public static readonly Dictionary<string, string> ApiKey = new() { { "x-api-key", "f1b5f4e7-f4dd-4014-b9be-e33fc0b94da1" } };
 
-        private static Task RunCommand(DiscordClient sender, MessageCreateEventArgs e)
+        private static Task CommandHandler(DiscordClient sender, MessageCreateEventArgs e)
         {
             _ = Task.Run(async () =>
             {
@@ -192,7 +190,7 @@ namespace cat_bot
 
                         CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
 
-                        await cmd.RunCommandAsync(ctx);
+                        await cmd.RunCommandAsync(ctx, sender);
                     }
                 }
             });

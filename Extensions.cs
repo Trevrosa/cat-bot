@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -18,24 +19,60 @@ namespace cat_bot
 {
     public static class Extensions
     {
-        public static async Task RunCommandAsync(this Command cmd, CommandContext ctx)
+        public static bool IsPrivileged(this Command cmd)
         {
-            if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
+            return Privileged.Contains(cmd.QualifiedName);
+        }
+
+        private readonly static List<string> Privileged = new()
+        {
+            "eval",
+            "sudo",
+            "unholy",
+            "bash"
+        };
+
+        public static async Task RunCommandAsync(this Command cmd, CommandContext ctx, DiscordClient client)
+        {
+            if (cmd.IsPrivileged())
             {
-                await Program.discord.GetCommandsNext().ExecuteCommandAsync(ctx);
+                if (ctx.User.IsWhitelisted(cmd.QualifiedName))
+                {
+                    await client.GetCommandsNext().ExecuteCommandAsync(ctx);
+                }
+                else
+                {
+                    DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+
+                    DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                        .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
+                        .WithColor(DiscordColor.Red)
+                        .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
+                        .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
+                            null);
+
+                    await ctx.RespondAsync(null, embed);
+                }
             }
             else
             {
-                DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
+                if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
+                {
+                    await client.GetCommandsNext().ExecuteCommandAsync(ctx);
+                }
+                else
+                {
+                    DiscordEmoji emoji = DiscordEmoji.FromName(ctx.Client, ":no_entry:");
 
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
-                    .WithColor(DiscordColor.Red)
-                    .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
-                    .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
-                        null);
+                    DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                        .WithDescription($"{emoji} You don't have the permissions needed to run this command. {emoji}")
+                        .WithColor(DiscordColor.Red)
+                        .WithTimestamp(DateTimeOffset.UtcNow.GetHongKongTime())
+                        .WithFooter($"Requested by: {ctx.Member.GetFullUsername()}",
+                            null);
 
-                await ctx.RespondAsync(null, embed);
+                    await ctx.RespondAsync(null, embed);
+                }
             }
         }
 

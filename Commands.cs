@@ -506,76 +506,76 @@ namespace cat_bot
             }
         }
 
-        [Command("join"), Description("Joins a voice channel.")]
-        public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
-        {
-            if (channel is null)
-            {
-                if (ctx.Member.VoiceState is not null)
-                {
-                    channel = ctx.Member.VoiceState.Channel;
+        //[Command("join"), Description("Joins a voice channel.")]
+        //public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
+        //{
+        //    if (channel is null)
+        //    {
+        //        if (ctx.Member.VoiceState is not null)
+        //        {
+        //            channel = ctx.Member.VoiceState.Channel;
 
-                    await channel.ConnectAsync();
-                    await channel.SendMessageAsync($"Joined {channel.Mention}!");
-                }
-                else
-                {
-                    await ctx.RespondAsync("You aren't in a voice channel!");
-                }
-            }
-            else if (channel.Type is ChannelType.Voice)
-            {
-                await channel.ConnectAsync();
-                await channel.SendMessageAsync($"Joined {channel.Mention}!");
-            }
-            else
-            {
-                await ctx.RespondAsync("I can't join a text channel!");
-            }
-        }
+        //            await channel.ConnectAsync();
+        //            await channel.SendMessageAsync($"Joined {channel.Mention}!");
+        //        }
+        //        else
+        //        {
+        //            await ctx.RespondAsync("You aren't in a voice channel!");
+        //        }
+        //    }
+        //    else if (channel.Type is ChannelType.Voice)
+        //    {
+        //        await channel.ConnectAsync();
+        //        await channel.SendMessageAsync($"Joined {channel.Mention}!");
+        //    }
+        //    else
+        //    {
+        //        await ctx.RespondAsync("I can't join a text channel!");
+        //    }
+        //}
 
-        [Command("play"), Description("Plays an audio file.")]
-        public async Task PlayCommand(CommandContext ctx, string path)
-        {
-            if (ctx.Guild.CurrentMember.VoiceState is null)
-            {
-                await ctx.RespondAsync($"I'm not in a voice channel!");
-            }
-            else
-            {
-                VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
-                VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
+        //[Command("play"), Description("Plays an audio file.")]
+        //public async Task PlayCommand(CommandContext ctx, string path)
+        //{
+        //    if (ctx.Guild.CurrentMember.VoiceState is null)
+        //    {
+        //        await ctx.RespondAsync($"I'm not in a voice channel!");
+        //    }
+        //    else
+        //    {
+        //        VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
+        //        VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
-                VoiceTransmitSink transmit = connection.GetTransmitSink();
+        //        VoiceTransmitSink transmit = connection.GetTransmitSink();
 
-                Stream pcm = ConvertAudioToPcm(path);
+        //        Stream pcm = ConvertAudioToPcm(path);
 
-                await pcm.CopyToAsync(transmit);
-                await pcm.DisposeAsync();
+        //        await pcm.CopyToAsync(transmit);
+        //        await pcm.DisposeAsync();
 
-                string name = String.Empty;
+        //        string name = String.Empty;
 
-                if (path.Contains("/") && !path.Contains("\\"))
-                {
-                    name = path.Split("/").Last();
-                }
-                else if (path.Contains("\\") && !path.Contains("/"))
-                {
-                    name = path.Split("\\").Last();
-                }
+        //        if (path.Contains("/") && !path.Contains("\\"))
+        //        {
+        //            name = path.Split("/").Last();
+        //        }
+        //        else if (path.Contains("\\") && !path.Contains("/"))
+        //        {
+        //            name = path.Split("\\").Last();
+        //        }
 
-                await ctx.RespondAsync($"Playing {Formatter.InlineCode(name)} in {connection.TargetChannel.Mention}!");
-            }
-        }
+        //        await ctx.RespondAsync($"Playing {Formatter.InlineCode(name)} in {connection.TargetChannel.Mention}!");
+        //    }
+        //}
 
-        [Command("leave"), Description("Leaves the current channel.")]
-        public async Task LeaveCommand(CommandContext ctx)
-        {
-            VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
-            VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
+        //[Command("leave"), Description("Leaves the current channel.")]
+        //public async Task LeaveCommand(CommandContext ctx)
+        //{
+        //    VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
+        //    VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
-            connection.Disconnect();
-        }
+        //    connection.Disconnect();
+        //}
 
         [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]
         public async Task Steal(CommandContext ctx, DiscordEmoji emoji, string name = null)
@@ -900,7 +900,7 @@ namespace cat_bot
             }
 
             CommandContext fctx = ctx.CommandsNext.CreateFakeContext(member, ctx.Channel, command, ctx.Prefix, cmd, args);
-            await cmd.RunCommandAsync(fctx);
+            await cmd.RunCommandAsync(fctx, ctx.Client);
         }
 
         [Command("eval"), Aliases("evalcs", "cseval", "roslyn"), Description("Evaluates C# code."), Hidden]
