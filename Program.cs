@@ -193,7 +193,7 @@ namespace cat_bot
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
-                    else if (e.Message.Content.StartsWith("cat") && !(e.Message.Content.Count(x => x == ' ') > 1))
+                    else if (e.Message.Content.StartsWith("cat") && e.Message.Content.Trim().Count(x => x == ' ') <= 1)
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
