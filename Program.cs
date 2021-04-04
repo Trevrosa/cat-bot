@@ -25,8 +25,8 @@ using DSharpPlus.VoiceNext;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Events;
-using static cat_bot.Extensions;
 using System.Diagnostics;
+using static cat_bot.Extensions;
 
 namespace cat_bot
 {
@@ -48,7 +48,7 @@ namespace cat_bot
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
                 .WriteTo.Console()
-                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u5}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
