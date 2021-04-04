@@ -202,9 +202,9 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordGuild guild = e.Context.Client.Guilds.Values.First(x => x.Name == "minecrumbs");
+                DiscordGuild guild = e.Context.Client.Guilds.Values.First(x => x.Name == "bot");
 
-                ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower() == "log") != null ? guild.Channels.Values.First(x => x.Name.ToLower() == "log").Id : 12312312;
+                ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower() == "loge") != null ? guild.Channels.Values.First(x => x.Name.ToLower() == "loge").Id : 12312312;
                 DiscordChannel botchannel = guild.GetChannel(s);
                 DiscordMember member = await guild.GetMemberAsync(758926553454870529);
 
@@ -290,8 +290,8 @@ namespace cat_bot
             {
                 try
                 {
-                    DiscordGuild guild = sender.Guilds.Values.First();
-                    ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower().Contains("log")) != null ? guild.Channels.Values.First(x => x.Name.ToLower().Contains("log")).Id : 12312312;
+                    DiscordGuild guild = sender.Guilds.Values.First(x => x.Name == "bot");
+                    ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower().Contains("loge")) != null ? guild.Channels.Values.First(x => x.Name.ToLower().Contains("loge")).Id : 12312312;
                     DiscordChannel botchannel = guild.GetChannel(s);
 
                     DiscordMember member = await guild.GetMemberAsync(758926553454870529);
