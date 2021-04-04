@@ -47,8 +47,8 @@ namespace cat_bot
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
-                .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u5}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u5}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {Level:u5} {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
@@ -261,8 +261,10 @@ namespace cat_bot
                                 .WithTitle($"Exception occurred while running `{e.Command.QualifiedName}` (Executed by {e.Context.Member.GetFullUsername()}):")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
-                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ? e.Exception.InnerException.Demystify().ToString() : "N/A")
-                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ? e.Exception.Demystify().StackTrace.Replace("Jess", "trev") : "N/A")
+                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ?
+                                    Formatter.BlockCode(e.Exception.InnerException.Demystify().ToString(), "cs") : "N/A")
+                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ?
+                                    Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "cs") : "N/A")
                                 .AddField("Jump Link", e.Context.Message.JumpLink.ToString())
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
@@ -298,8 +300,10 @@ namespace cat_bot
                                 .WithTitle($"Exception occurred:")
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
-                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ? e.Exception.InnerException.Demystify().ToString() : "N/A")
-                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ? e.Exception.Demystify().StackTrace.Replace("Jess", "trev") : "N/A")
+                                .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ?
+                                    Formatter.BlockCode(e.Exception.InnerException.Demystify().ToString(), "cs") : "N/A")
+                                .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ?
+                                    Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "cs") : "N/A")
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 
