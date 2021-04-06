@@ -26,8 +26,8 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Events;
 using System.Diagnostics;
-using static cat_bot.Extensions;
 using LibGit2Sharp;
+using static cat_bot.Extensions;
 
 namespace cat_bot
 {
@@ -193,11 +193,12 @@ namespace cat_bot
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
-                    else if (e.Message.Content.StartsWith("cat") && e.Message.Content.Trim().Count(x => x == ' ') <= 1)
-                    {
-                        Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
+                    if (e.Message.Content.StartsWith("cat") && e.Message.Content.Trim().Count(x => x == ' ') <= 1)
+                    {
+                        Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
+
+                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }

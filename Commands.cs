@@ -727,14 +727,8 @@ namespace cat_bot
         [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
-            Repository repo = Repo;
-
             await Extensions.RunBashAsync($@"cd ""/root/cat bot/""");
-
-            //git fetch
-            Remote remote = repo.Network.Remotes["origin"];
-            List<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification).ToList();
-            LibGit2Sharp.Commands.Fetch(repo, remote.Name, refSpecs, null, _ = String.Empty);
+            await Extensions.RunBashAsync("git fetch");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
             string diff = await Extensions.RunBashAsync($"git status -sb");
@@ -934,7 +928,7 @@ namespace cat_bot
                 ScriptOptions sopts = ScriptOptions.Default
                     .AddImports("System", "System.Collections.Generic", "System.Diagnostics", "System.Linq", "System.Net.Http", "System.Text", "System.Threading.Tasks", "DSharpPlus",
                         "DSharpPlus.CommandsNext", "DSharpPlus.Entities", "DSharpPlus.EventArgs", "DSharpPlus.Exceptions", "System.IO", "cat_bot", "cat_bot.Extensions",
-                        "System.Text.RegularExpressions", "System.Text.Json")
+                        "System.Text.RegularExpressions", "System.Text.Json", "System.Net", "Serilog", "Serilog.Extensions.Logging")
                     .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
 
                 Stopwatch sw1 = Stopwatch.StartNew();
@@ -983,12 +977,12 @@ namespace cat_bot
                 if (rex != null)
                 {
                     DiscordMessage message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
-                        String.Concat($"```cs", "\n", Regex.Replace(rex.StackTrace, @"`\d+", ""), "\n", "```"));
+                        Formatter.BlockCode(rex.Demystify().StackTrace, "csharp"));
 
                     embed = new DiscordEmbedBuilder
                     {
                         Title = "Execution failed",
-                        Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message, $"`. \n\nGo to {message.JumpLink} for more info."),
+                        Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message, $"`\n\nGo to {message.JumpLink} for more info."),
                         Color = DiscordColor.Purple,
                     };
                     await msg.ModifyAsync(embed: embed.Build());
