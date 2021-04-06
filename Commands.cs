@@ -933,7 +933,7 @@ namespace cat_bot
                     .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
 
                 Stopwatch sw1 = Stopwatch.StartNew();
-                Script<object> cs = CSharpScript.Create(code, sopts, typeof(EvaluationEnvironment));
+                Script<object> cs = CSharpScript.Create(code.Trim(), sopts, typeof(EvaluationEnvironment));
                 ImmutableArray<Diagnostic> csc = cs.Compile();
                 sw1.Stop();
 
@@ -947,7 +947,7 @@ namespace cat_bot
                     };
                     foreach ((Diagnostic xd, FileLinePositionSpan ls, int line) in from Diagnostic xd in csc.Take(5)
                                                                                    let ls = xd.Location.GetLineSpan()
-                                                                                   let line = ls.StartLinePosition.Line - 1
+                                                                                   let line = ls.StartLinePosition.Line
                                                                                    select (xd, ls, line))
                     {
                         embed.AddField(String.Concat("Error at ", line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false);
@@ -978,9 +978,9 @@ namespace cat_bot
                 if (rex != null)
                 {
                     DiscordChannel channel = await ctx.Client.GetChannelAsync(812620259714138112);
-                    DiscordMessage message = await channel.SendMessageAsync(new DiscordEmbedBuilder().WithTitle($"Exception occurred:").AddField("Type", $"{rex.GetType()}", true)
+                    DiscordMessage message = await channel.SendMessageAsync(new DiscordEmbedBuilder().WithTitle($"Exception occurred while evaluating code:").AddField("Type", $"{rex.GetType()}", true)
                                 .AddField("Message", $"{rex.Message}", true).AddField("Inner Exception", !String.IsNullOrEmpty(rex.InnerException.Demystify().ToString()) ?
-                                    Formatter.BlockCode(rex.InnerException.Demystify().ToString(), "cs") : "N/A").AddField("Stack Trace", !String.IsNullOrEmpty(rex.Demystify().StackTrace) ?
+                                    Formatter.BlockCode(rex.InnerException.Demystify().ToString(), "csharp") : "N/A").AddField("Stack Trace", !String.IsNullOrEmpty(rex.Demystify().StackTrace) ?
                                     Formatter.BlockCode(rex.Demystify().StackTrace.Replace("Jess", "trev"), "csharp") : "N/A").WithColor(DiscordColor.Red).WithTimestamp(DateTimeOffset.Now));
 
                     embed = new DiscordEmbedBuilder
