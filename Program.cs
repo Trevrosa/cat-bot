@@ -48,7 +48,7 @@ namespace cat_bot
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
-                .WriteTo.Console(outputTemplate: String.Concat('[', @"{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}", ']', @" {Level:u4} {Message:lj}{NewLine}{Exception}"))
+                .WriteTo.Console(outputTemplate: String.Concat(@"{Timestamp:yyyy-MM-dd HH:mm:ss} ", @"{Level:u4} {Message:lj}{NewLine}{Exception}"))
                 .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
@@ -212,11 +212,8 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordGuild guild = e.Context.Client.Guilds.Values.First(x => x.Name == "bot");
-
-                ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower() == "loge") != null ? guild.Channels.Values.First(x => x.Name.ToLower() == "loge").Id : 12312312;
-                DiscordChannel botchannel = guild.GetChannel(s);
-                DiscordMember member = await guild.GetMemberAsync(758926553454870529);
+                DiscordChannel botchannel = await e.Context.Client.GetChannelAsync(812620259714138112);
+                DiscordMember member = await botchannel.Guild.GetMemberAsync(758926553454870529);
 
                 switch (e.Exception)
                 {
@@ -272,7 +269,7 @@ namespace cat_bot
                                 .AddField("Type", $"{e.Exception.GetType()}", true)
                                 .AddField("Message", $"{e.Exception.Message}", true)
                                 .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ?
-                                    Formatter.BlockCode(e.Exception.InnerException.Demystify().ToString(), "cs") : "N/A")
+                                    Formatter.BlockCode(e.Exception.InnerException.Demystify().ToString(), "csharp") : "N/A")
                                 .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ?
                                     Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "cs") : "N/A")
                                 .AddField("Jump Link", e.Context.Message.JumpLink.ToString())
@@ -300,11 +297,8 @@ namespace cat_bot
             {
                 try
                 {
-                    DiscordGuild guild = sender.Guilds.Values.First(x => x.Name == "bot");
-                    ulong s = guild.Channels.Values.FirstOrDefault(x => x.Name.ToLower().Contains("loge")) != null ? guild.Channels.Values.First(x => x.Name.ToLower().Contains("loge")).Id : 12312312;
-                    DiscordChannel botchannel = guild.GetChannel(s);
-
-                    DiscordMember member = await guild.GetMemberAsync(758926553454870529);
+                    DiscordChannel botchannel = await sender.GetChannelAsync(812620259714138112);
+                    DiscordMember member = await botchannel.Guild.GetMemberAsync(758926553454870529);
 
                     DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                                 .WithTitle($"Exception occurred:")
@@ -313,7 +307,7 @@ namespace cat_bot
                                 .AddField("Inner Exception", !String.IsNullOrEmpty(e.Exception.InnerException.Demystify().ToString()) ?
                                     Formatter.BlockCode(e.Exception.InnerException.Demystify().ToString(), "cs") : "N/A")
                                 .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ?
-                                    Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "cs") : "N/A")
+                                    Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "csharp") : "N/A")
                                 .WithColor(DiscordColor.Red)
                                 .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
 

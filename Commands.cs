@@ -893,7 +893,8 @@ namespace cat_bot
         }
 
         [Command("sudo"), Description("Executes a command as another user."), Hidden]
-        public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member, [RemainingText, Description("Command with arguments to execute.")] string command)
+        public async Task Sudo(CommandContext ctx, [Description("Member to execute the command as.")] DiscordMember member,
+            [RemainingText, Description("Command with arguments to execute.")] string command)
         {
             Command cmd = ctx.CommandsNext.FindCommand(command, out string args);
             if (cmd == null)
@@ -976,13 +977,14 @@ namespace cat_bot
 
                 if (rex != null)
                 {
-                    DiscordMessage message = await ctx.Client.Guilds.Values.First(x => x.Name == "minecrumbs").Channels.Values.First(x => x.Name == "log").SendMessageAsync($"**Stack Trace**: \n" +
-                        Formatter.BlockCode(rex.Demystify().StackTrace, "csharp"));
+                    DiscordChannel channel = await ctx.Client.GetChannelAsync(812620259714138112);
+                    DiscordMessage message = await channel.SendMessageAsync($"**Stack Trace**: \n" + Formatter.BlockCode(rex.Demystify().StackTrace, "csharp"));
 
                     embed = new DiscordEmbedBuilder
                     {
                         Title = "Execution failed",
-                        Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message, $"`\n\nGo to {message.JumpLink} for more info."),
+                        Description = String.Concat("Execution failed after ", sw2.ElapsedMilliseconds.ToString(), "ms with `", rex.GetType(), ": ", rex.Message,
+                            $"`\n\nGo to {message.JumpLink} for more info."),
                         Color = DiscordColor.Purple,
                     };
                     await msg.ModifyAsync(embed: embed.Build());
