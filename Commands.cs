@@ -978,10 +978,22 @@ namespace cat_bot
                 if (rex != null)
                 {
                     DiscordChannel channel = await ctx.Client.GetChannelAsync(812620259714138112);
-                    DiscordMessage message = await channel.SendMessageAsync(new DiscordEmbedBuilder().WithTitle($"Exception occurred while evaluating code:").AddField("Type", $"{rex.GetType()}", true)
-                                .AddField("Message", $"{rex.Message}", true).AddField("Inner Exception", !String.IsNullOrEmpty(rex.InnerException.Demystify().ToString()) ?
-                                    Formatter.BlockCode(rex.InnerException.Demystify().ToString(), "csharp") : "N/A").AddField("Stack Trace", !String.IsNullOrEmpty(rex.Demystify().StackTrace) ?
-                                    Formatter.BlockCode(rex.Demystify().StackTrace.Replace("Jess", "trev"), "csharp") : "N/A").WithColor(DiscordColor.Red).WithTimestamp(DateTimeOffset.Now));
+                    DiscordEmbedBuilder embedBuilder = new();
+
+                    embedBuilder.WithTitle($"Exception occurred while evaluating code:").AddField("Type", $"{rex.GetType()}", true)
+                                .AddField("Message", $"{rex.Message}", true).WithColor(DiscordColor.Red).WithTimestamp(DateTimeOffset.Now);
+
+                    if (String.IsNullOrEmpty(rex.InnerException.Demystify().ToString()))
+                    {
+                        embedBuilder.AddField("Inner Exception", Formatter.BlockCode(rex.InnerException.Demystify().ToString(), "csharp"))
+                            .AddField("Stack Trace", Formatter.BlockCode(rex.Demystify().StackTrace.Replace("Jess", "trev"), "csharp"));
+                    }
+                    else
+                    {
+                        embedBuilder.AddField("Stack Trace", Formatter.BlockCode(rex.Demystify().StackTrace.Replace("Jess", "trev"), "csharp"));
+                    }
+
+                    DiscordMessage message = await channel.SendMessageAsync(embedBuilder.Build());
 
                     embed = new DiscordEmbedBuilder
                     {
