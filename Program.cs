@@ -274,7 +274,7 @@ namespace cat_bot
                                     Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "cs") : "N/A")
                                 .AddField("Jump Link", e.Context.Message.JumpLink.ToString())
                                 .WithColor(DiscordColor.Red)
-                                .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
+                                .WithTimestamp(DateTimeOffset.Now);
 
                             DiscordMessageBuilder ER = new()
                             {
@@ -309,7 +309,7 @@ namespace cat_bot
                                 .AddField("Stack Trace", !String.IsNullOrEmpty(e.Exception.Demystify().StackTrace) ?
                                     Formatter.BlockCode(e.Exception.Demystify().StackTrace.Replace("Jess", "trev"), "csharp") : "N/A")
                                 .WithColor(DiscordColor.Red)
-                                .WithTimestamp(DateTimeOffset.Now.GetHongKongTime());
+                                .WithTimestamp(DateTimeOffset.Now);
 
                     DiscordMessageBuilder msg = new()
                     {

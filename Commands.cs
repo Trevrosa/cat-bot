@@ -978,7 +978,10 @@ namespace cat_bot
                 if (rex != null)
                 {
                     DiscordChannel channel = await ctx.Client.GetChannelAsync(812620259714138112);
-                    DiscordMessage message = await channel.SendMessageAsync($"**Stack Trace**: \n" + Formatter.BlockCode(rex.Demystify().StackTrace, "csharp"));
+                    DiscordMessage message = await channel.SendMessageAsync(new DiscordEmbedBuilder().WithTitle($"Exception occurred:").AddField("Type", $"{rex.GetType()}", true)
+                                .AddField("Message", $"{rex.Message}", true).AddField("Inner Exception", !String.IsNullOrEmpty(rex.InnerException.Demystify().ToString()) ?
+                                    Formatter.BlockCode(rex.InnerException.Demystify().ToString(), "cs") : "N/A").AddField("Stack Trace", !String.IsNullOrEmpty(rex.Demystify().StackTrace) ?
+                                    Formatter.BlockCode(rex.Demystify().StackTrace.Replace("Jess", "trev"), "csharp") : "N/A").WithColor(DiscordColor.Red).WithTimestamp(DateTimeOffset.Now));
 
                     embed = new DiscordEmbedBuilder
                     {
