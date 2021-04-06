@@ -48,7 +48,7 @@ namespace cat_bot
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
-                .WriteTo.Console(outputTemplate: @"""{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}"" {Level:u4} {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(outputTemplate: String.Concat('[', @"{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}", ']', @" {Level:u4} {Message:lj}{NewLine}{Exception}"))
                 .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
