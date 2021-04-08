@@ -724,6 +724,23 @@ namespace cat_bot
             }
         }
 
+        [Command("linkvertise"), Description("Bypasses a linkvertise link."), Hidden]
+        public async Task Linkvertise(CommandContext ctx, string link = null)
+        {
+            if (String.IsNullOrEmpty(link))
+            {
+                await ctx.RespondAsync("I can't bypass nothing!");
+            }
+            else if (!Regex.IsMatch(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)"))
+            {
+                await ctx.RespondAsync("That isn't a linkvertise link!");
+            }
+            else
+            {
+                link = Regex.Replace(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)", String.Empty).Remove("?o=sharing");
+            }
+        }
+
         [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
