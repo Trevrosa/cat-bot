@@ -1,4 +1,8 @@
-﻿using DSharpPlus;
+﻿using Aspose.Imaging;
+using Aspose.Imaging.Brushes;
+using Aspose.Imaging.ImageOptions;
+using Aspose.Imaging.Sources;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
@@ -19,6 +23,68 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static Task<Image> Grey(string dir)
+        {
+            if (!File.Exists(dir))
+            {
+                throw new FileNotFoundException($"File not found.", dir);
+            }
+
+            using (Image image = Image.Load(dir))
+            {
+                RasterCachedImage rasterCachedImage = (RasterCachedImage)image;
+
+                if (!rasterCachedImage.IsCached)
+                {
+                    rasterCachedImage.CacheData();
+                }
+
+                rasterCachedImage.Grayscale();
+                rasterCachedImage.Save(dir);
+            }
+
+            Image image1 = Image.Load(dir);
+            return Task.FromResult(image1);
+        }
+
+        public static Task<Image> Grey(Image image)
+        {
+            RasterCachedImage rasterCachedImage = (RasterCachedImage)image;
+
+            if (!rasterCachedImage.IsCached)
+            {
+                rasterCachedImage.CacheData();
+            }
+
+            rasterCachedImage.Grayscale();
+
+            return Task.FromResult((Image)rasterCachedImage);
+        }
+
+        public static Task<Image> Grey(FileStream file)
+        {
+            if (!File.Exists(file.Name))
+            {
+                throw new FileNotFoundException($"File not found.", file.Name);
+            }
+
+            using (Image image = Image.Load(file))
+            {
+                RasterCachedImage rasterCachedImage = (RasterCachedImage)image;
+
+                if (!rasterCachedImage.IsCached)
+                {
+                    rasterCachedImage.CacheData();
+                }
+
+                rasterCachedImage.Grayscale();
+                rasterCachedImage.Save(file);
+            }
+
+            Image image1 = Image.Load(file);
+            return Task.FromResult(image1);
+        }
+
         public static async Task StartAsync(this DiscordShardedClient client, DiscordActivity av)
         {
             await client.StartAsync();

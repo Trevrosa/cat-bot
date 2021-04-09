@@ -28,6 +28,7 @@ using Serilog.Events;
 using System.Diagnostics;
 using LibGit2Sharp;
 using static cat_bot.Extensions;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace cat_bot
 {
@@ -59,7 +60,7 @@ namespace cat_bot
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
+                MinimumLogLevel = LogLevel.Debug,
                 LoggerFactory = logFactory
             });
 
@@ -153,7 +154,9 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                foreach (DiscordUser user in sender.CurrentApplication.Owners)
+                DiscordApplication app = await sender.GetCurrentApplicationAsync();
+
+                foreach (DiscordUser user in app.Owners)
                 {
                     foreach (KeyValuePair<string, Command> cmd in sender.GetCommandsNext().RegisteredCommands)
                     {

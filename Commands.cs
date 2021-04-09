@@ -27,7 +27,11 @@ using DSharpPlus.VoiceNext;
 using static cat_bot.MakeTrans;
 using static cat_bot.Extensions;
 using static cat_bot.Program;
-using LibGit2Sharp;
+using Aspose.Drawing;
+using Aspose.Imaging;
+using Aspose.OCR;
+using Aspose.Zip;
+using Aspose.Html;
 
 namespace cat_bot
 {
@@ -508,9 +512,16 @@ namespace cat_bot
         }
 
         [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
-        public async Task Sex(CommandContext ctx)
+        public async Task Sex(CommandContext ctx, DiscordUser user = null)
         {
-            await ctx.RespondAsync(new DiscordMessageBuilder().WithFile(File.OpenRead("homa.png")));
+            if (user is null)
+            {
+                await ctx.RespondAsync(new DiscordMessageBuilder().WithFile(File.OpenRead("homa.png")));
+            }
+            else
+            {
+                Image image = Image.Load("homa.png");
+            }
         }
 
         //[Command("join"), Description("Joins a voice channel.")]
@@ -952,7 +963,8 @@ namespace cat_bot
                 ScriptOptions sopts = ScriptOptions.Default
                     .AddImports("System", "System.Collections.Generic", "System.Diagnostics", "System.Linq", "System.Net.Http", "System.Text", "System.Threading.Tasks", "DSharpPlus",
                         "DSharpPlus.CommandsNext", "DSharpPlus.Entities", "DSharpPlus.EventArgs", "DSharpPlus.Exceptions", "System.IO", "cat_bot", "cat_bot.Extensions",
-                        "System.Text.RegularExpressions", "System.Text.Json", "System.Net", "Serilog", "Serilog.Extensions.Logging")
+                        "System.Text.RegularExpressions", "System.Text.Json", "System.Net", "Serilog", "Serilog.Extensions.Logging", "System.Net", "Aspose.Drawing", "Aspose.Zip", "Aspose.OCR",
+                        "Aspose.Imaging", "Aspose.Html")
                     .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
 
                 Stopwatch sw1 = Stopwatch.StartNew();
