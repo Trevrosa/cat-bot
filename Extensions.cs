@@ -19,6 +19,12 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static async Task StartAsync(this DiscordShardedClient client, DiscordActivity av)
+        {
+            await client.StartAsync();
+            await client.UpdateStatusAsync(av);
+        }
+
         public static bool IsPrivileged(this Command cmd)
         {
             return Privileged.Contains(cmd.QualifiedName);

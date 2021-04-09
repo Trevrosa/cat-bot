@@ -54,7 +54,7 @@ namespace cat_bot
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
 
-            DiscordClient discord = new(new DiscordConfiguration()
+            DiscordShardedClient discord = new(new DiscordConfiguration()
             {
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
@@ -63,7 +63,7 @@ namespace cat_bot
                 LoggerFactory = logFactory
             });
 
-            CommandsNextExtension commands = discord.UseCommandsNext(new CommandsNextConfiguration()
+            IReadOnlyDictionary<int, CommandsNextExtension> cnextdict = await discord.UseCommandsNextAsync(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { Prefix },
                 CaseSensitive = false,
@@ -72,19 +72,25 @@ namespace cat_bot
                 EnableMentionPrefix = true
             });
 
-            discord.UseInteractivity(new InteractivityConfiguration()
+            foreach (var cnext in from KeyValuePair<int, CommandsNextExtension> value in cnextdict
+                                  let cnext = value.Value
+                                  select cnext)
+            {
+                cnext.RegisterCommands<Commands>();
+                cnext.CommandErrored += CommandErrored;
+            }
+
+            await discord.UseInteractivityAsync(new InteractivityConfiguration()
             {
                 PollBehaviour = PollBehaviour.KeepEmojis,
                 Timeout = TimeSpan.FromHours(3)
             });
 
-            discord.UseVoiceNext();
-
             AppDomain.CurrentDomain.ProcessExit += async (s, ev) =>
             {
                 try
                 {
-                    await discord.DisconnectAsync();
+                    await discord.StopAsync();
                 }
                 catch
                 {
@@ -96,7 +102,7 @@ namespace cat_bot
             {
                 try
                 {
-                    await discord.DisconnectAsync();
+                    await discord.StopAsync();
                 }
                 catch
                 {
@@ -104,17 +110,13 @@ namespace cat_bot
                 }
             };
 
-            commands.RegisterCommands<Commands>();
-
             #endregion config
 
-            commands.CommandErrored += CommandErrored;
-            discord.ClientErrored += ClientError;
-
-            discord.MessageCreated += CommandHandler;
             discord.Ready += Ready;
+            discord.ClientErrored += ClientError;
             discord.GuildMemberRemoved += Reinvite;
 
+            discord.MessageCreated += CommandHandler;
             discord.MessageDeleted += Snipe;
             discord.MessageUpdated += EditSnipe;
 
@@ -124,7 +126,7 @@ namespace cat_bot
                 Name = "coded by trev !!"
             };
 
-            await discord.ConnectAsync(av);
+            await discord.StartAsync(av);
             await Task.Delay(-1);
         }
 
