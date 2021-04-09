@@ -507,6 +507,12 @@ namespace cat_bot
             }
         }
 
+        [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
+        public async Task Sex(CommandContext ctx)
+        {
+            await ctx.RespondAsync(new DiscordMessageBuilder().WithFile(File.OpenRead("homa.png")));
+        }
+
         //[Command("join"), Description("Joins a voice channel.")]
         //public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
         //{
