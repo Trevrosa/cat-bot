@@ -1,2 +1,2 @@
-# cat-bot [![Known Vulnerabilities](https://snyk.io/test/github/Trevrosa/cat-bot/badge.svg)](https://snyk.io/test/github/Trevrosa/cat-bot)
+# cat-bot [https://ci.appveyor.com/api/projects/status/sqwqan96xfpn904r?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
 cat bot best bot it has the cat
