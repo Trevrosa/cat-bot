@@ -963,8 +963,7 @@ namespace cat_bot
                 ScriptOptions sopts = ScriptOptions.Default
                     .AddImports("System", "System.Collections.Generic", "System.Diagnostics", "System.Linq", "System.Net.Http", "System.Text", "System.Threading.Tasks", "DSharpPlus",
                         "DSharpPlus.CommandsNext", "DSharpPlus.Entities", "DSharpPlus.EventArgs", "DSharpPlus.Exceptions", "System.IO", "cat_bot", "cat_bot.Extensions",
-                        "System.Text.RegularExpressions", "System.Text.Json", "System.Net", "Serilog", "Serilog.Extensions.Logging", "System.Net", "Aspose.Drawing", "Aspose.Zip", "Aspose.OCR",
-                        "Aspose.Imaging", "Aspose.Html")
+                        "System.Text.RegularExpressions", "System.Text.Json", "System.Net", "Serilog", "Serilog.Extensions.Logging", "System.Net")
                     .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Where(xa => !xa.IsDynamic && !String.IsNullOrWhiteSpace(xa.Location)));
 
                 Stopwatch sw1 = Stopwatch.StartNew();
