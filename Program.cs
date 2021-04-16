@@ -151,9 +151,9 @@ namespace cat_bot
             {
                 foreach (ulong id in sender.CurrentApplication.Owners.Select(x => x.Id))
                 {
-                    foreach (Command cmd in sender.GetCommandsNext().RegisteredCommands.Values)
+                    foreach (Command cmd in sender.GetCommandsNext().RegisteredCommands)
                     {
-                        Whitelisted.Add(cmd.Value.QualifiedName, new() { id });
+                        Whitelisted.Add(cmd.QualifiedName, new() { id });
                     }
                 }
 
