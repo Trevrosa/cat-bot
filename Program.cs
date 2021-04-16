@@ -149,13 +149,11 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordApplication app = sender.CurrentApplication;
-
-                foreach (DiscordUser user in app.Owners)
+                foreach (ulong id in sender.CurrentApplication.Owners.Select(x => x.Id))
                 {
-                    foreach (KeyValuePair<string, Command> cmd in sender.GetCommandsNext().RegisteredCommands)
+                    foreach (Command cmd in sender.GetCommandsNext().RegisteredCommands.Values)
                     {
-                        Whitelisted.Add(cmd.Value.QualifiedName, new() { user.Id });
+                        Whitelisted.Add(cmd.Value.QualifiedName, new() { id });
                     }
                 }
 
