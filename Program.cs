@@ -55,7 +55,7 @@ namespace cat_bot
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
 
-            DiscordShardedClient discord = new(new DiscordConfiguration()
+            DiscordClient discord = new(new DiscordConfiguration()
             {
                 Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
@@ -64,7 +64,7 @@ namespace cat_bot
                 LoggerFactory = logFactory
             });
 
-            IReadOnlyDictionary<int, CommandsNextExtension> cnextdict = await discord.UseCommandsNextAsync(new CommandsNextConfiguration()
+            CommandsNextExtension cnext = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { Prefix },
                 CaseSensitive = false,
@@ -73,15 +73,10 @@ namespace cat_bot
                 EnableMentionPrefix = true
             });
 
-            foreach (var cnext in from KeyValuePair<int, CommandsNextExtension> value in cnextdict
-                                  let cnext = value.Value
-                                  select cnext)
-            {
-                cnext.RegisterCommands<Commands>();
-                cnext.CommandErrored += CommandErrored;
-            }
+            cnext.RegisterCommands<Commands>();
+            cnext.CommandErrored += CommandErrored;
 
-            await discord.UseInteractivityAsync(new InteractivityConfiguration()
+            discord.UseInteractivity(new InteractivityConfiguration()
             {
                 PollBehaviour = PollBehaviour.KeepEmojis,
                 Timeout = TimeSpan.FromHours(3)
@@ -91,7 +86,7 @@ namespace cat_bot
             {
                 try
                 {
-                    await discord.StopAsync();
+                    await discord.DisconnectAsync();
                 }
                 catch
                 {
@@ -103,7 +98,7 @@ namespace cat_bot
             {
                 try
                 {
-                    await discord.StopAsync();
+                    await discord.DisconnectAsync();
                 }
                 catch
                 {
@@ -127,7 +122,7 @@ namespace cat_bot
                 Name = "coded by trev !!"
             };
 
-            await discord.StartAsync(av);
+            await discord.ConnectAsync(av);
             await Task.Delay(-1);
         }
 
@@ -154,7 +149,7 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordApplication app = await sender.GetCurrentApplicationAsync();
+                DiscordApplication app = sender.CurrentApplication;
 
                 foreach (DiscordUser user in app.Owners)
                 {

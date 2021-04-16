@@ -85,12 +85,6 @@ namespace cat_bot
             return Task.FromResult(image1);
         }
 
-        public static async Task StartAsync(this DiscordShardedClient client, DiscordActivity av)
-        {
-            await client.StartAsync();
-            await client.UpdateStatusAsync(av);
-        }
-
         public static bool IsPrivileged(this Command cmd)
         {
             return Privileged.Contains(cmd.QualifiedName);
