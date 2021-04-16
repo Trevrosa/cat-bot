@@ -1,2 +1,2 @@
-# cat-bot
-cat bot best bot it has the cat
+# cat-bot [![Build status](https://ci.appveyor.com/api/projects/status/github/Trevrosa/cat-bot?svg=true)](https://ci.appveyor.com/api/projects/status/github/Trevrosa/)
+cet bot
