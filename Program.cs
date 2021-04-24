@@ -183,7 +183,7 @@ namespace cat_bot
             {
                 if (e.Author != sender.CurrentUser)
                 {
-                    if (e.Message.Content.ToLower().StartsWith("!"))
+                    if (e.Message.Content.StartsWith("!"))
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
@@ -192,7 +192,7 @@ namespace cat_bot
                         await cmd.RunCommandAsync(ctx, sender);
                     }
 
-                    if (e.Message.Content.StartsWith("cat") && e.Message.Content.Trim().Count(x => x == ' ') <= 1)
+                    if (e.Message.Content.ToLower().StartsWith("cat") && e.Message.Content.Trim().Count(x => x == ' ') <= 1)
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
 
