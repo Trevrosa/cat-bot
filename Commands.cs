@@ -527,7 +527,7 @@ namespace cat_bot
         [Command("join"), Description("Joins a voice channel.")]
         public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
         {
-            if (channel is null)
+            if (channel == null)
             {
                 if (ctx.Member.VoiceState is not null)
                 {

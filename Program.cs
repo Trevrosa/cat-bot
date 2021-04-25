@@ -50,7 +50,7 @@ namespace cat_bot
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
                 .WriteTo.Console(outputTemplate: String.Concat(@"{Timestamp:yyyy-MM-dd HH:mm:ss} ", @"{Level:u4} {Message:lj}{NewLine}{Exception}"))
-                .WriteTo.File("cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File("/logs/cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
@@ -149,12 +149,11 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                foreach (ulong id in sender.CurrentApplication.Owners.Select(x => x.Id))
+                foreach (var (id, cmd) in from ulong id in sender.CurrentApplication.Owners.Select(x => x.Id)
+                                          from Command cmd in sender.GetCommandsNext().RegisteredCommands.Values
+                                          select (id, cmd))
                 {
-                    foreach (Command cmd in sender.GetCommandsNext().RegisteredCommands.Values)
-                    {
-                        Whitelisted.Add(cmd.QualifiedName, new() { id });
-                    }
+                    Whitelisted.Add(cmd.QualifiedName, new() { id });
                 }
 
                 //if (File.Exists($"/root/cat bot/whitelisted.txt"))
