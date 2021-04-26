@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Drawing" Version="21.3.0" />
+    <PackageReference Include="Aspose.Drawing" Version="21.4.0" />
     <PackageReference Include="Aspose.Font" Version="21.4.0" />
     <PackageReference Include="Aspose.HTML" Version="21.3.0" />
     <PackageReference Include="Aspose.Imaging" Version="21.4.0" />
