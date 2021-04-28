@@ -10,5 +10,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    registries:
-    - dsharpplus
+    registries: "*"
+    insecure-external-code-execution: allow
