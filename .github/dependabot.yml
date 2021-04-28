@@ -3,8 +3,6 @@ registries:
   dsharpplus:
     type: "nuget-feed"
     url: "https://nuget.emzi0767.com/api/v3/index.json"
-    username: ""
-    password: ""
 updates:
   - package-ecosystem: "nuget"
     directory: "/"
