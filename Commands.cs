@@ -29,7 +29,6 @@ using static cat_bot.Extensions;
 using static cat_bot.Program;
 using Aspose.Drawing;
 using Aspose.Imaging;
-using Aspose.OCR;
 using Aspose.Zip;
 using Aspose.Html;
 
@@ -239,24 +238,24 @@ namespace cat_bot
 
                     blacklistedValue.Remove(member.Id);
 
-                    if (File.Exists($"/root/cat bot/blacklisted.txt"))
+                    if (File.Exists($"{RootDir}/blacklisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
                             List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
-                            File.Delete($"/root/cat bot/blacklisted.txt");
-                            await File.WriteAllLinesAsync($"/root/cat bot/blacklisted.txt", lines);
+                            File.Delete($"{RootDir}/blacklisted.txt");
+                            await File.WriteAllLinesAsync($"{RootDir}/blacklisted.txt", lines);
                         }
                     }
 
                     whitelistedValue.Add(member.Id);
 
-                    if (File.Exists($"/root/cat bot/whitelisted.txt"))
+                    if (File.Exists($"{RootDir}/whitelisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
@@ -264,20 +263,20 @@ namespace cat_bot
 
                             List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                            File.Delete($"/root/cat bot/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                            File.Delete($"{RootDir}/whitelisted.txt");
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                         }
                         else
                         {
                             List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                            File.Delete($"/root/cat bot/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                            File.Delete($"{RootDir}/whitelisted.txt");
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                         }
                     }
                     else
                     {
-                        StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                        StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
                         await sw.WriteLineAsync($"{command}: {member.Id}");
                         sw.Close();
                     }
@@ -296,9 +295,9 @@ namespace cat_bot
 
                         whitelistedValue.Add(member.Id);
 
-                        if (File.Exists($"/root/cat bot/whitelisted.txt"))
+                        if (File.Exists($"{RootDir}/whitelisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -306,20 +305,20 @@ namespace cat_bot
 
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                                File.Delete($"{RootDir}/whitelisted.txt");
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                                File.Delete($"{RootDir}/whitelisted.txt");
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                             }
                         }
                         else
                         {
-                            StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -330,9 +329,9 @@ namespace cat_bot
 
                         List<ulong> whitelistedValue = Whitelisted.First(x => x.Key == command && x.Value.Any(x => x.Equals(member.Id))).Value;
 
-                        if (File.Exists($"/root/cat bot/whitelisted.txt"))
+                        if (File.Exists($"{RootDir}/whitelisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -340,20 +339,20 @@ namespace cat_bot
 
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                                File.Delete($"{RootDir}/whitelisted.txt");
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                                File.Delete($"{RootDir}/whitelisted.txt");
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                             }
                         }
                         else
                         {
-                            StreamWriter sw = new($"/root/cat bot/whitelisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -382,24 +381,24 @@ namespace cat_bot
 
                     whitelistedValue.Remove(member.Id);
 
-                    if (File.Exists($"/root/cat bot/whitelisted.txt"))
+                    if (File.Exists($"{RootDir}/whitelisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
                             List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
-                            File.Delete($"/root/cat bot/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"/root/cat bot/whitelisted.txt", lines);
+                            File.Delete($"{RootDir}/whitelisted.txt");
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
                         }
                     }
 
                     blacklistedValue.Add(member.Id);
 
-                    if (File.Exists($"/root/cat bot/blacklisted.txt"))
+                    if (File.Exists($"{RootDir}/blacklisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
@@ -407,20 +406,20 @@ namespace cat_bot
 
                             List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                            File.Delete($"/root/cat bot/blacklisted.txt");
-                            File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                            File.Delete($"{RootDir}/blacklisted.txt");
+                            File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                         }
                         else
                         {
                             List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                            File.Delete($"/root/cat bot/blacklisted.txt");
-                            File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                            File.Delete($"{RootDir}/blacklisted.txt");
+                            File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                         }
                     }
                     else
                     {
-                        StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                        StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
                         await sw.WriteLineAsync($"{command}: {member.Id}");
                         sw.Close();
                     }
@@ -439,9 +438,9 @@ namespace cat_bot
 
                         blacklistedValue.Add(member.Id);
 
-                        if (File.Exists($"/root/cat bot/blacklisted.txt"))
+                        if (File.Exists($"{RootDir}/blacklisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -449,20 +448,20 @@ namespace cat_bot
 
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/blacklisted.txt");
-                                File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                                File.Delete($"{RootDir}/blacklisted.txt");
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/blacklisted.txt");
-                                File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                                File.Delete($"{RootDir}/blacklisted.txt");
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                             }
                         }
                         else
                         {
-                            StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -473,9 +472,9 @@ namespace cat_bot
 
                         List<ulong> blacklistedValue = Blacklisted.First(x => x.Key == command && x.Value.Any(x => x.Equals(member.Id))).Value;
 
-                        if (File.Exists($"/root/cat bot/blacklisted.txt"))
+                        if (File.Exists($"{RootDir}/blacklisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -483,20 +482,20 @@ namespace cat_bot
 
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/blacklisted.txt");
-                                File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                                File.Delete($"{RootDir}/blacklisted.txt");
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
-                                File.Delete($"/root/cat bot/blacklisted.txt");
-                                File.WriteAllLines($"/root/cat bot/blacklisted.txt", lines);
+                                File.Delete($"{RootDir}/blacklisted.txt");
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
                             }
                         }
                         else
                         {
-                            StreamWriter sw = new($"/root/cat bot/blacklisted.txt", true, Encoding.UTF8);
+                            StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
                             await sw.WriteLineAsync($"{command}: {member.Id}");
                             sw.Close();
                         }
@@ -741,27 +740,27 @@ namespace cat_bot
             }
         }
 
-        [Command("linkvertise"), Description("Bypasses a linkvertise link."), Hidden]
-        public async Task Linkvertise(CommandContext ctx, string link = null)
-        {
-            if (String.IsNullOrEmpty(link))
-            {
-                await ctx.RespondAsync("I can't bypass nothing!");
-            }
-            else if (!Regex.IsMatch(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)"))
-            {
-                await ctx.RespondAsync("That isn't a linkvertise link!");
-            }
-            else
-            {
-                link = Regex.Replace(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)", String.Empty).Remove("?o=sharing");
-            }
-        }
+        //[Command("linkvertise"), Description("Bypasses a linkvertise link."), Hidden]
+        //public async Task Linkvertise(CommandContext ctx, string link = null)
+        //{
+        //    if (String.IsNullOrEmpty(link))
+        //    {
+        //        await ctx.RespondAsync("I can't bypass nothing!");
+        //    }
+        //    else if (!Regex.IsMatch(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)"))
+        //    {
+        //        await ctx.RespondAsync("That isn't a linkvertise link!");
+        //    }
+        //    else
+        //    {
+        //        link = Regex.Replace(link, @"(https://linkvertise.com/|https://up-to-down.net/|https://link-to.net/|https://direct-link.net/|https://file-link.net)", String.Empty).Remove("?o=sharing");
+        //    }
+        //}
 
         [Command("commit"), Description("Returns the commit the bot is on."), Hidden]
         public async Task Commit(CommandContext ctx)
         {
-            await Extensions.RunBashAsync($@"cd ""/root/cat bot/""");
+            await Extensions.RunBashAsync($@"cd '{RootDir}/'");
             await Extensions.RunBashAsync("git fetch");
 
             string commit = await Extensions.RunBashAsync($"git rev-parse HEAD");
