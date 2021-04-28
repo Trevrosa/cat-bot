@@ -50,14 +50,14 @@ namespace cat_bot
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
                 .WriteTo.Console(outputTemplate: String.Concat(@"{Timestamp:yyyy-MM-dd HH:mm:ss} ", @"{Level:u4} {Message:lj}{NewLine}{Exception}"))
-                .WriteTo.File("/home/trev/cat-bot/logs/cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File($"{RootDir}/logs/cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
 
             DiscordClient discord = new(new DiscordConfiguration()
             {
-                Token = JsonDocument.Parse(File.OpenRead("/root/cat bot/token.json")).RootElement.GetProperty("token").ToString(),
+                Token = JsonDocument.Parse(File.OpenRead($"{RootDir}/token.json")).RootElement.GetProperty("token").ToString(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 MinimumLogLevel = LogLevel.Debug,
@@ -116,65 +116,13 @@ namespace cat_bot
             discord.MessageDeleted += Snipe;
             discord.MessageUpdated += EditSnipe;
 
-            DiscordActivity av = new()
-            {
-                ActivityType = ActivityType.Playing,
-                Name = "coded by trev !!"
-            };
-
-            await discord.ConnectAsync(av);
+            await discord.ConnectAsync(new() { ActivityType = ActivityType.Playing, Name = "coded by trev !!" });
             await Task.Delay(-1);
         }
 
         public static Dictionary<string, List<ulong>> Whitelisted = new();
         public static Dictionary<string, List<ulong>> Blacklisted = new();
-
-        private static Task Reinvite(DiscordClient sender, GuildMemberRemoveEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                if (e.Guild.Name.ToLower().Contains("homa") && sender.CurrentApplication.Owners.Select(x => x.Id).Any(x => x == e.Member.Id))
-                {
-                    DiscordChannel channel = await sender.GetChannelAsync(812339716216455188);
-                    DiscordInvite invite = await e.Guild.Channels.Values.First(x => x.Type is ChannelType.Text).CreateInviteAsync(604800);
-
-                    await channel.SendMessageAsync($"https://discord.gg/{invite.Code}");
-                }
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private static Task Ready(DiscordClient sender, ReadyEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                foreach (var (id, cmd) in from ulong id in sender.CurrentApplication.Owners.Select(x => x.Id)
-                                          from Command cmd in sender.GetCommandsNext().RegisteredCommands.Values
-                                          select (id, cmd))
-                {
-                    Whitelisted.Add(cmd.QualifiedName, new() { id });
-                }
-
-                //if (File.Exists($"/root/cat bot/whitelisted.txt"))
-                //{
-                //    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/whitelisted.txt");
-                //    List<string> e = text.ToList();
-                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                //}
-
-                //if (File.Exists($"/root/cat bot/blacklisted.txt"))
-                //{
-                //    string[] text = await File.ReadAllLinesAsync($"/root/cat bot/blacklisted.txt");
-                //    List<string> e = text.ToList();
-                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                //}
-            });
-
-            return Task.CompletedTask;
-        }
-
-        public static readonly Dictionary<string, string> ApiKey = new() { { "x-api-key", "f1b5f4e7-f4dd-4014-b9be-e33fc0b94da1" } };
+        public static readonly string RootDir = $"/home/trev/cat-bot";
 
         private static Task CommandHandler(DiscordClient sender, MessageCreateEventArgs e)
         {
@@ -204,6 +152,46 @@ namespace cat_bot
 
             return Task.CompletedTask;
         }
+
+        private static Task Reinvite(DiscordClient sender, GuildMemberRemoveEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                if (e.Guild.Name.ToLower().Contains("homa") && sender.CurrentApplication.Owners.Select(x => x.Id).Any(x => x == e.Member.Id))
+                {
+                    DiscordChannel channel = await sender.GetChannelAsync(812339716216455188);
+                    DiscordInvite invite = await e.Guild.Channels.Values.First(x => x.Type is ChannelType.Text).CreateInviteAsync(604800);
+
+                    await channel.SendMessageAsync($"https://discord.gg/{invite.Code}");
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private static Task Ready(DiscordClient sender, ReadyEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                //if (File.Exists($$"{RootDir}/whitelisted.txt"))
+                //{
+                //    string[] text = await File.ReadAllLinesAsync($$"{RootDir}/whitelisted.txt");
+                //    List<string> e = text.ToList();
+                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
+                //}
+
+                //if (File.Exists($$"{RootDir}/blacklisted.txt"))
+                //{
+                //    string[] text = await File.ReadAllLinesAsync($$"{RootDir}/blacklisted.txt");
+                //    List<string> e = text.ToList();
+                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
+                //}
+            });
+
+            return Task.CompletedTask;
+        }
+
+        public static readonly Dictionary<string, string> ApiKey = new() { { "x-api-key", "f1b5f4e7-f4dd-4014-b9be-e33fc0b94da1" } };
 
         private static Task CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
@@ -358,7 +346,7 @@ namespace cat_bot
         public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage = new();
         public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter = new();
         public static string Prefix = GetUniqueKey(30);
-        public static Repository Repo = new("/root/cat bot/.git/");
+        public static Repository Repo = new($"{RootDir}/.git/");
 
         private static Task Snipe(DiscordClient sender, MessageDeleteEventArgs e)
         {

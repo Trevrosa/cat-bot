@@ -100,9 +100,15 @@ namespace cat_bot
 
         public static async Task RunCommandAsync(this Command cmd, CommandContext ctx, DiscordClient client)
         {
+            List<DiscordUser> owners = client.CurrentApplication.Owners.ToList();
+
             if (cmd.IsPrivileged())
             {
-                if (ctx.User.IsWhitelisted(cmd.QualifiedName))
+                if (owners.Contains(ctx.User))
+                {
+                    await client.GetCommandsNext().ExecuteCommandAsync(ctx);
+                }
+                else if (ctx.User.IsWhitelisted(cmd.QualifiedName))
                 {
                     await client.GetCommandsNext().ExecuteCommandAsync(ctx);
                 }
@@ -122,7 +128,11 @@ namespace cat_bot
             }
             else
             {
-                if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
+                if (owners.Contains(ctx.User))
+                {
+                    await client.GetCommandsNext().ExecuteCommandAsync(ctx);
+                }
+                else if (!ctx.User.IsBlacklisted(cmd.QualifiedName))
                 {
                     await client.GetCommandsNext().ExecuteCommandAsync(ctx);
                 }
