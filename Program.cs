@@ -134,7 +134,7 @@ namespace cat_bot
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
+                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author as DiscordMember, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
@@ -143,7 +143,7 @@ namespace cat_bot
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author, e.Channel, e.Message.Content, Prefix, cmd, args);
+                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author as DiscordMember, e.Channel, e.Message.Content, Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
