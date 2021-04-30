@@ -1,3 +1,5 @@
+#!/bin/bash
+
 git clone --no-checkout https://github.com/Trevrosa/cat-bot.git "/home/trev/existing-dir-tmp/"
 rm -rf "/home/trev/cat-bot/.git/"
 mv "/home/trev/existing-dir-tmp/.git/" "/home/trev/cat-bot/"
