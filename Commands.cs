@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Net;
 using System.Net.Http;
 using DSharpPlus.EventArgs;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -508,6 +509,23 @@ namespace cat_bot
             {
                 await ctx.RespondAsync($"That command doesn't exist!");
             }
+        }
+
+        [Command("dog"), Description("Sends the dog.")]
+        public async Task Sex(CommandContext ctx)
+        {
+            var e = await GetAsync("https://dog.ceo/api/breeds/image/random");
+            var es = JsonDocument.Parse(e).RootElement.GetProperty("message");
+
+            var bree = es.ToString().Split("/")[4].Replace("-", " ");
+
+            TextInfo myTI = new CultureInfo("en-US",false).TextInfo;
+
+            bree = myTI.ToTitleCase(bree).Replace("St", "St. ");
+
+            bree = myTI.ToTitleCase(bree);
+
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! {bree}").WithImageUrl(es.ToString().WithColor(DiscordColor.Green));
         }
 
         [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
