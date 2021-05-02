@@ -525,7 +525,7 @@ namespace cat_bot
 
             bree = myTI.ToTitleCase(bree);
 
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! {bree}").WithImageUrl(es.ToString()).WithColor(DiscordColor.Green));
+            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({bree})").WithImageUrl(es.ToString()).WithColor(DiscordColor.Green));
         }
 
         [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
