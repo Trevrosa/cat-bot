@@ -120,8 +120,56 @@ namespace cat_bot
             await Task.Delay(-1);
         }
 
-        public static Dictionary<string, List<ulong>> Whitelisted = new();
-        public static Dictionary<string, List<ulong>> Blacklisted = new();
+        private static Dictionary<string, List<ulong>> whitelisted = new();
+
+        public static Dictionary<string, List<ulong>> Whitelisted
+        {
+            get { return whitelisted; }
+            set { whitelisted = value; }
+        }
+
+        private static Dictionary<string, List<ulong>> blacklisted = new();
+
+        public static Dictionary<string, List<ulong>> Blacklisted
+        {
+            get { return blacklisted; }
+            set { blacklisted = value; }
+        }
+
+        private static Dictionary<DiscordGuild, DiscordMessage> deletedSnipeMessage = new();
+
+        public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage
+        {
+            get { return deletedSnipeMessage; }
+            set { deletedSnipeMessage = value; }
+        }
+
+        private static Dictionary<DiscordGuild, string> deletedSnipeDeleter = new();
+
+        public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter
+        {
+            get { return deletedSnipeDeleter; }
+            set { deletedSnipeDeleter = value; }
+        }
+
+        private static Dictionary<DiscordGuild, MessageUpdateEventArgs> editSnipeMessage = new();
+
+        public static Dictionary<DiscordGuild, MessageUpdateEventArgs> EditSnipeMessage
+        {
+            get { return editSnipeMessage; }
+            set { editSnipeMessage = value; }
+        }
+
+        public static string Prefix = GetUniqueKey(30);
+
+        private static Repository repo = new($"{RootDir}/.git/");
+
+        public static Repository Repo
+        {
+            get { return repo; }
+            set { repo = value; }
+        }
+
         public static readonly string RootDir = $"/home/trev/cat-bot";
 
         private static Task CommandHandler(DiscordClient sender, MessageCreateEventArgs e)
@@ -324,8 +372,6 @@ namespace cat_bot
             return Task.CompletedTask;
         }
 
-        public static Dictionary<DiscordGuild, MessageUpdateEventArgs> EditSnipeMessage = new();
-
         private static Task EditSnipe(DiscordClient sender, MessageUpdateEventArgs e)
         {
             _ = Task.Run(async () =>
@@ -351,11 +397,6 @@ namespace cat_bot
 
             return Task.CompletedTask;
         }
-
-        public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage = new();
-        public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter = new();
-        public static string Prefix = GetUniqueKey(30);
-        public static Repository Repo = new($"{RootDir}/.git/");
 
         private static Task Snipe(DiscordClient sender, MessageDeleteEventArgs e)
         {

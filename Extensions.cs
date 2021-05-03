@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -23,6 +24,13 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        private static readonly TextInfo TextInfo = new CultureInfo("en-US", false).TextInfo;
+
+        public static string ToTitleCase(this string str)
+        {
+            return TextInfo.ToTitleCase(str);
+        }
+
         public static Task<Image> Grey(string dir)
         {
             if (!File.Exists(dir))
@@ -206,10 +214,10 @@ namespace cat_bot
                 DiscordMessage msg = await channel.SendMessageAsync(s);
                 result.Add(msg);
 
-                await Task.Delay(12);
+                await Task.Delay(12).ConfigureAwait(false);
             }
 
-            return await Task.FromResult(result);
+            return await Task.FromResult(result).ConfigureAwait(false);
         }
 
         public static string Remove(this string remove, string replace)
@@ -374,7 +382,7 @@ namespace cat_bot
             {
                 MethodInfo method = array[i];
                 ParameterInfo[] parameters = method.GetParameters();
-                string parameterDescriptions = String.Concat("(", String.Join(", ", method.GetParameters().Select(x => x.ParameterType + " " + x.Name).ToArray()), ")");
+                string parameterDescriptions = String.Concat("(", String.Join(", ", parameters.Select(x => x.ParameterType + " " + x.Name).ToArray()), ")");
 
                 string methodResult = $"{method.ReturnType} {method.Name}{parameterDescriptions}";
 
@@ -719,12 +727,12 @@ namespace cat_bot
             TimeSpan StartCpuTime = CurrentProcess.TotalProcessorTime;
             Stopwatch Timer = Stopwatch.StartNew();
 
-            await Task.Delay(MeasurementWindow);
+            await Task.Delay(MeasurementWindow).ConfigureAwait(false);
 
             TimeSpan EndCpuTime = CurrentProcess.TotalProcessorTime;
             Timer.Stop();
 
-            return await Task.FromResult((EndCpuTime - StartCpuTime).TotalMilliseconds / (Environment.ProcessorCount * Timer.ElapsedMilliseconds));
+            return await Task.FromResult((EndCpuTime - StartCpuTime).TotalMilliseconds / (Environment.ProcessorCount * Timer.ElapsedMilliseconds)).ConfigureAwait(false);
         }
     }
 

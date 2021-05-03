@@ -241,14 +241,14 @@ namespace cat_bot
 
                     if (File.Exists($"{RootDir}/blacklisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt").ConfigureAwait(false);
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
                             List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"{RootDir}/blacklisted.txt");
-                            await File.WriteAllLinesAsync($"{RootDir}/blacklisted.txt", lines);
+                            await File.WriteAllLinesAsync($"{RootDir}/blacklisted.txt", final).ConfigureAwait(false);
                         }
                     }
 
@@ -256,7 +256,7 @@ namespace cat_bot
 
                     if (File.Exists($"{RootDir}/whitelisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt").ConfigureAwait(false);
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
@@ -265,20 +265,20 @@ namespace cat_bot
                             List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                             File.Delete($"{RootDir}/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                         }
                         else
                         {
                             List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                             File.Delete($"{RootDir}/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
-                        await sw.WriteLineAsync($"{command}: {member.Id}");
+                        await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                         sw.Close();
                     }
                 }
@@ -298,7 +298,7 @@ namespace cat_bot
 
                         if (File.Exists($"{RootDir}/whitelisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt").ConfigureAwait(false);
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -307,20 +307,20 @@ namespace cat_bot
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                             }
                         }
                         else
                         {
                             StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
-                            await sw.WriteLineAsync($"{command}: {member.Id}");
+                            await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                             sw.Close();
                         }
                     }
@@ -332,7 +332,7 @@ namespace cat_bot
 
                         if (File.Exists($"{RootDir}/whitelisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt").ConfigureAwait(false);
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -341,20 +341,20 @@ namespace cat_bot
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", whitelistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/whitelisted.txt");
-                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                                await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                             }
                         }
                         else
                         {
                             StreamWriter sw = new($"{RootDir}/whitelisted.txt", true, Encoding.UTF8);
-                            await sw.WriteLineAsync($"{command}: {member.Id}");
+                            await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                             sw.Close();
                         }
                     }
@@ -384,14 +384,14 @@ namespace cat_bot
 
                     if (File.Exists($"{RootDir}/whitelisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/whitelisted.txt").ConfigureAwait(false);
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
                             List<string> final = lines.ToList().Where(x => x.StartsWith($"{command}:")).Select(x => x.Remove($", {member.Id}").Remove($"{member.Id}, ")).ToList();
 
                             File.Delete($"{RootDir}/whitelisted.txt");
-                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", lines);
+                            await File.WriteAllLinesAsync($"{RootDir}/whitelisted.txt", final).ConfigureAwait(false);
                         }
                     }
 
@@ -399,7 +399,7 @@ namespace cat_bot
 
                     if (File.Exists($"{RootDir}/blacklisted.txt"))
                     {
-                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
+                        string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt").ConfigureAwait(false);
 
                         if (lines.Any(x => x.StartsWith($"{command}:")))
                         {
@@ -408,20 +408,20 @@ namespace cat_bot
                             List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                             File.Delete($"{RootDir}/blacklisted.txt");
-                            File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                            File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                         }
                         else
                         {
                             List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                             File.Delete($"{RootDir}/blacklisted.txt");
-                            File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                            File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                         }
                     }
                     else
                     {
                         StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
-                        await sw.WriteLineAsync($"{command}: {member.Id}");
+                        await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                         sw.Close();
                     }
                 }
@@ -441,7 +441,7 @@ namespace cat_bot
 
                         if (File.Exists($"{RootDir}/blacklisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt").ConfigureAwait(false);
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -463,7 +463,7 @@ namespace cat_bot
                         else
                         {
                             StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
-                            await sw.WriteLineAsync($"{command}: {member.Id}");
+                            await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                             sw.Close();
                         }
                     }
@@ -475,7 +475,7 @@ namespace cat_bot
 
                         if (File.Exists($"{RootDir}/blacklisted.txt"))
                         {
-                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt");
+                            string[] lines = await File.ReadAllLinesAsync($"{RootDir}/blacklisted.txt").ConfigureAwait(false);
 
                             if (lines.Any(x => x.StartsWith($"{command}:")))
                             {
@@ -497,7 +497,7 @@ namespace cat_bot
                         else
                         {
                             StreamWriter sw = new($"{RootDir}/blacklisted.txt", true, Encoding.UTF8);
-                            await sw.WriteLineAsync($"{command}: {member.Id}");
+                            await sw.WriteLineAsync($"{command}: {member.Id}").ConfigureAwait(false);
                             sw.Close();
                         }
                     }
@@ -512,20 +512,22 @@ namespace cat_bot
         }
 
         [Command("dog"), Description("Sends the dog.")]
-        public async Task Sex(CommandContext ctx)
+        public async Task Sex(CommandContext ctx, string breedOption = "")
         {
-            var e = await GetAsync("https://dog.ceo/api/breeds/image/random");
-            var es = JsonDocument.Parse(e).RootElement.GetProperty("message");
+            if (breedOption == "")
+            {
+                string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
+                string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
 
-            var bree = es.ToString().Split("/")[4].Replace("-", " ");
+                string breed = dog.Split("/")[4].Replace("-", " ");
 
-            TextInfo myTI = new CultureInfo("en-US",false).TextInfo;
+                breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
 
-            bree = myTI.ToTitleCase(bree).Replace("St", "St. ");
-
-            bree = myTI.ToTitleCase(bree);
-
-            await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({bree})").WithImageUrl(es.ToString()).WithColor(DiscordColor.Green));
+                await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green));
+            }
+            else
+            {
+            }
         }
 
         [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
