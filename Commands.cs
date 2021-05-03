@@ -153,6 +153,10 @@ namespace cat_bot
 
                                 break;
                             }
+                        default:
+                            {
+                                return;
+                            }
                     }
                 }
             }
@@ -195,7 +199,7 @@ namespace cat_bot
                 }
                 catch
                 {
-                    if (!(ctx.Message.Content.ToList().Count(x => x == ' ') > 1))
+                    if (ctx.Message.Content.ToList().Count(x => x == ' ') <= 1)
                     {
                         string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
@@ -540,7 +544,7 @@ namespace cat_bot
                 }
                 catch
                 {
-                    return;
+                    // do nothing
                 }
             }
         }

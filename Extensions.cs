@@ -496,7 +496,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await Task.FromResult(await reader.ReadToEndAsync()).ConfigureAwait(false);
+                return await Task.FromResult(await reader.ReadToEndAsync().ConfigureAwait(false));
             }
         }
 
@@ -513,7 +513,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await Task.FromResult(await reader.ReadToEndAsync()).ConfigureAwait(false);
+                return await Task.FromResult(await reader.ReadToEndAsync().ConfigureAwait(false));
             }
         }
 
