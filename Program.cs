@@ -32,7 +32,7 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace cat_bot
 {
-    public class Program
+    public static class Program
     {
         private static void Main(string[] args)
         {
@@ -117,7 +117,7 @@ namespace cat_bot
             discord.MessageUpdated += EditSnipe;
 
             await discord.ConnectAsync(new() { ActivityType = ActivityType.Playing, Name = "coded by trev !!" });
-            await Task.Delay(-1);
+            await Task.Delay(-1).ConfigureAwait(false);
         }
 
         private static Dictionary<string, List<ulong>> whitelisted = new();
@@ -160,14 +160,12 @@ namespace cat_bot
             set { editSnipeMessage = value; }
         }
 
-        public static string Prefix = GetUniqueKey(30);
+        private static string prefix = GetUniqueKey(30);
 
-        private static Repository repo = new($"{RootDir}/.git/");
-
-        public static Repository Repo
+        public static string Prefix
         {
-            get { return repo; }
-            set { repo = value; }
+            get { return prefix; }
+            set { prefix = value; }
         }
 
         public static readonly string RootDir = $"/home/trev/cat-bot";

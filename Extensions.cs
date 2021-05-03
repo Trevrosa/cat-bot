@@ -220,9 +220,9 @@ namespace cat_bot
             return await Task.FromResult(result).ConfigureAwait(false);
         }
 
-        public static string Remove(this string remove, string replace)
+        public static string Remove(this string str, string replace)
         {
-            return remove.Replace(replace, String.Empty);
+            return str.Replace(replace, String.Empty);
         }
 
         public static DateTime GetHongKongTime(this DateTimeOffset offset)
@@ -368,7 +368,7 @@ namespace cat_bot
                 result = "No result returned";
             }
 
-            return await Task.FromResult(result);
+            return await Task.FromResult(result).ConfigureAwait(false);
         }
 
         #region ListThings
@@ -496,7 +496,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await Task.FromResult(await reader.ReadToEndAsync());
+                return await Task.FromResult(await reader.ReadToEndAsync()).ConfigureAwait(false);
             }
         }
 
@@ -513,7 +513,7 @@ namespace cat_bot
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new(stream))
             {
-                return await Task.FromResult(await reader.ReadToEndAsync());
+                return await Task.FromResult(await reader.ReadToEndAsync()).ConfigureAwait(false);
             }
         }
 

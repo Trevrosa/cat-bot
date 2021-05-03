@@ -92,9 +92,13 @@ namespace cat_bot
 
                                 break;
                             }
+                        default:
+                            {
+                                return;
+                            }
                     }
 
-                    await Task.Delay(200);
+                    await Task.Delay(200).ConfigureAwait(false);
                 }
             }
             else if (ctx.Channel.Type is ChannelType.Private)
@@ -191,11 +195,7 @@ namespace cat_bot
                 }
                 catch
                 {
-                    if (ctx.Message.Content.ToList().Count(x => x == ' ') > 1)
-                    {
-                        return;
-                    }
-                    else
+                    if (!(ctx.Message.Content.ToList().Count(x => x == ' ') > 1))
                     {
                         string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
@@ -450,14 +450,14 @@ namespace cat_bot
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/blacklisted.txt");
-                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/blacklisted.txt");
-                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                             }
                         }
                         else
@@ -484,14 +484,14 @@ namespace cat_bot
                                 List<string> final = lines.Where(x => x.Trim() != $"{command}: {String.Join(", ", blacklistedValue)}").Append($"{oldvalue}, {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/blacklisted.txt");
-                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                             }
                             else
                             {
                                 List<string> final = lines.Append($"{command}: {member.Id}").ToList();
 
                                 File.Delete($"{RootDir}/blacklisted.txt");
-                                File.WriteAllLines($"{RootDir}/blacklisted.txt", lines);
+                                File.WriteAllLines($"{RootDir}/blacklisted.txt", final);
                             }
                         }
                         else
@@ -527,6 +527,21 @@ namespace cat_bot
             }
             else
             {
+                try
+                {
+                    string json = await GetAsync("https://dog.ceo/api/breed/{breedOption}/images/random");
+                    string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+
+                    string breed = dog.Split("/")[4].Replace("-", " ");
+
+                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
+
+                    await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green));
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
 
@@ -585,10 +600,9 @@ namespace cat_bot
 
                 VoiceTransmitSink transmit = connection.GetTransmitSink();
 
-                Stream pcm = ConvertAudioToPcm(path);
+                using Stream pcm = ConvertAudioToPcm(path);
 
-                await pcm.CopyToAsync(transmit);
-                await pcm.DisposeAsync();
+                await pcm.CopyToAsync(transmit).ConfigureAwait(false);
 
                 string name = String.Empty;
 
@@ -841,7 +855,7 @@ namespace cat_bot
 
                 if (result.Length > 2000)
                 {
-                    string newresult = "";
+                    StringBuilder newresult = new();
                     int here = 0;
 
                     char[] array = result.ToCharArray();
@@ -850,12 +864,12 @@ namespace cat_bot
                         char character = array[i];
                         if (here < 2000)
                         {
-                            newresult += character;
+                            newresult.Append(character);
                             here++;
                         }
                     }
 
-                    await ctx.RespondAsync(newresult);
+                    await ctx.RespondAsync(newresult.ToString());
                     await ctx.RespondAsync($"There is more content in the result. Respond with yes or no for the bot to send a file with the full result.");
                     InteractivityExtension interactivity = ctx.Client.GetInteractivity();
                     InteractivityResult<DiscordMessage> interact = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.User.Id);
@@ -866,7 +880,7 @@ namespace cat_bot
                         {
                             string path = $"/root/temp{Random.Next(23234, 262332)}.txt";
                             StreamWriter sw = new(path, false, Encoding.UTF8);
-                            await sw.WriteLineAsync(result);
+                            await sw.WriteLineAsync(result).ConfigureAwait(false);
                             sw.Close();
 
                             FileStream file = File.OpenRead(path);
@@ -1071,7 +1085,9 @@ namespace cat_bot
                     .AddField("Execution time", String.Concat(sw2.ElapsedMilliseconds.ToString(), "ms"), true);
 
                 if (css.ReturnValue != null)
+                {
                     embed.AddField("Return type", css.ReturnValue.GetType().ToString(), true);
+                }
 
                 await msg.ModifyAsync(embed: embed.Build());
             });
