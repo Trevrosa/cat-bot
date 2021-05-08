@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd '~/cat-bot/'
+cd '/home/trev/cat-bot/'
 sudo git pull
 git reset --hard
 
