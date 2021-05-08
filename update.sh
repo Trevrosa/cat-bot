@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd "~/cat-bot/"
-sudo git clone --no-checkout 'https://github.com/Trevrosa/cat-bot.git' "/home/trev/existing-dir-tmp/"
+git reset --hard HEAD
+sudo git clone --no-checkout 'https://github.com/Trevrosa/cat-bot.git' '~/existing-dir-tmp/'
 if [ -d "~/cat-bot/.git/" ]; then
 rm -rf "~/cat-bot/.git/"
 fi
