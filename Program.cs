@@ -50,7 +50,7 @@ namespace cat_bot
                 .MinimumLevel.Debug()
                 .Enrich.WithExceptionDetails()
                 .WriteTo.Console(outputTemplate: String.Concat(@"{Timestamp:yyyy-MM-dd HH:mm:ss} ", @"{Level:u4} {Message:lj}{NewLine}{Exception}"))
-                .WriteTo.File($"{RootDir}/logs/cat-.log", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File($"{RootDir}/cat.log", outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u4}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
 
             ILoggerFactory logFactory = new LoggerFactory().AddSerilog();
