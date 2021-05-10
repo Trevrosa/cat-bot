@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd '/home/trev/cat-bot/'
-pull=$(sudo git pull)
+pull=$(sudo git pull -f)
 
 if [[ $pull =~ 'Already up to date.' ]];
 then
