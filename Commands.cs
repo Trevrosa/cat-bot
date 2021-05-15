@@ -163,9 +163,9 @@ namespace cat_bot
         }
 
         [Command("cat"), Description("Cat!!!!!"), Cooldown(4, 2, CooldownBucketType.Channel)]
-        public async Task Cat(CommandContext ctx, string breedoption = "")
+        public async Task Cat(CommandContext ctx, string breedoption = null)
         {
-            if (breedoption == "")
+            if (breedoption is null)
             {
                 string stin = await GetAsync($"https://api.thecatapi.com/v1/images/search?format=json", ApiKey);
 
@@ -175,16 +175,20 @@ namespace cat_bot
                 {
                     string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+
                     await ctx.RespondAsync(msg);
                 }
                 catch
                 {
-                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+
                     await ctx.RespondAsync(msg);
                 }
             }
-            else if (breedoption != "")
+            else if (breedoption is not null)
             {
                 try
                 {
@@ -194,7 +198,9 @@ namespace cat_bot
 
                     string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                    DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+
                     await ctx.RespondAsync(msg);
                 }
                 catch
@@ -209,13 +215,17 @@ namespace cat_bot
                         {
                             string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
-                                .WithColor(DiscordColor.Green);
+                            DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
+                                .WithColor(DiscordColor.Green).WithFooter("psst.. that breed doesn't exist..");
+                            DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
                             await ctx.RespondAsync(msg);
                         }
                         catch
                         {
-                            DiscordEmbedBuilder msg = new DiscordEmbedBuilder().WithTitle("Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
+                            DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url")))
+                                .WithColor(DiscordColor.Green).WithFooter("psst.. that breed doesn't exist..");
+
+                            DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
                             await ctx.RespondAsync(msg);
                         }
                     }
@@ -223,10 +233,49 @@ namespace cat_bot
             }
         }
 
-        [Command("test"), Description("e"), RequireOwner, Hidden]
-        public async Task Test(CommandContext ctx)
+        [Command("dog"), Description("Sends the dog.")]
+        public async Task Sex(CommandContext ctx, string breedoption = null)
         {
-            Extensions.Throw(null).Wait();
+            if (breedoption is null)
+            {
+                string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
+                string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+
+                string breed = dog.Split("/")[4].Replace("-", " ");
+
+                breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
+
+                await ctx.RespondAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build())
+                    .WithReply(ctx.Message.Id));
+            }
+            else if (breedoption is not null)
+            {
+                try
+                {
+                    string json = await GetAsync("https://dog.ceo/api/breed/{breedoption}/images/random");
+                    string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+
+                    string breed = dog.Split("/")[4].Replace("-", " ");
+
+                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
+
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build())
+                    .WithReply(ctx.Message.Id));
+                }
+                catch
+                {
+                    string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
+                    string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+
+                    string breed = dog.Split("/")[4].Replace("-", " ");
+
+                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
+
+                    await ctx.RespondAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog)
+                        .WithFooter("psst.. that breed doesn't exist..").WithColor(DiscordColor.Green).Build())
+                    .WithReply(ctx.Message.Id));
+                }
+            }
         }
 
         [Command("whitelist"), Description("Whitelists a person on a command."), RequireOwner, Hidden]
@@ -515,38 +564,15 @@ namespace cat_bot
             }
         }
 
-        [Command("dog"), Description("Sends the dog.")]
-        public async Task Sex(CommandContext ctx, string breedOption = "")
+        [Command("test"), Description("e"), RequireOwner, Hidden]
+        public async Task Test(CommandContext ctx)
         {
-            if (breedOption == "")
-            {
-                string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
-                string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+            Extensions.Throw(null).Wait();
+        }
 
-                string breed = dog.Split("/")[4].Replace("-", " ");
-
-                breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
-
-                await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green));
-            }
-            else
-            {
-                try
-                {
-                    string json = await GetAsync("https://dog.ceo/api/breed/{breedOption}/images/random");
-                    string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
-
-                    string breed = dog.Split("/")[4].Replace("-", " ");
-
-                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
-
-                    await ctx.RespondAsync(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green));
-                }
-                catch
-                {
-                    // do nothing
-                }
-            }
+        [Command("avatar"), Aliases("av"), Description("Shows the avatar of a member.")]
+        public async Task Avatar(CommandContext ctx, DiscordUser user)
+        {
         }
 
         [Command("sex"), Aliases("homa", "hona", "sexy"), Description("Sends the sex."), Hidden]
@@ -565,7 +591,7 @@ namespace cat_bot
         [Command("join"), Description("Joins a voice channel.")]
         public async Task JoinCommand(CommandContext ctx, DiscordChannel channel = null)
         {
-            if (channel == null)
+            if (channel is null)
             {
                 if (ctx.Member.VoiceState is not null)
                 {
@@ -626,10 +652,17 @@ namespace cat_bot
         [Command("leave"), Description("Leaves the current channel.")]
         public async Task LeaveCommand(CommandContext ctx)
         {
-            VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
-            VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
+            if (ctx.Guild.CurrentMember.VoiceState is null)
+            {
+                await ctx.RespondAsync($"I'm not in a voice channel!");
+            }
+            else
+            {
+                VoiceNextExtension vnext = ctx.Client.GetVoiceNext();
+                VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
-            connection.Disconnect();
+                connection.Disconnect();
+            }
         }
 
         [Command("steal"), Description("Steals an emoji from another server."), Priority(2)]
