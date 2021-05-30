@@ -3,6 +3,7 @@ using Aspose.Imaging.Brushes;
 using Aspose.Imaging.ImageOptions;
 using Aspose.Imaging.Sources;
 using DSharpPlus;
+using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
@@ -24,6 +25,41 @@ namespace cat_bot
 {
     public static class Extensions
     {
+        public static async Task<DiscordMessage> ReplyAsync(this CommandContext ctx, string text, bool mentions = true)
+        {
+            DiscordMessageBuilder builder = new();
+            builder.WithContent(text).WithReply(ctx.Message.Id, mentions);
+            return await Task.FromResult(await builder.SendAsync(ctx.Channel));
+        }
+
+        public static async Task<DiscordMessage> ReplyAsync(this CommandContext ctx, DiscordEmbed embed, bool mentions = true)
+        {
+            DiscordMessageBuilder builder = new();
+            builder.WithEmbed(embed).WithReply(ctx.Message.Id, mentions);
+            return await Task.FromResult(await builder.SendAsync(ctx.Channel));
+        }
+
+        public static async Task<DiscordMessage> ReplyAsync(this CommandContext ctx, DiscordMessage msg, bool mentions = true)
+        {
+            if (msg.Embeds.Count == 0)
+            {
+                DiscordMessageBuilder builder = new();
+                builder.WithContent(msg.Content).WithReply(ctx.Message.Id, mentions);
+                return await Task.FromResult(await builder.SendAsync(ctx.Channel));
+            }
+            else
+            {
+                DiscordMessageBuilder builder = new();
+                builder.WithContent(msg.Content).WithEmbed(msg.Embeds[0]).WithReply(ctx.Message.Id, mentions);
+                return await Task.FromResult(await builder.SendAsync(ctx.Channel));
+            }
+        }
+
+        public static async Task<DiscordMessage> ReplyAsync(this CommandContext ctx, DiscordMessageBuilder builder, bool mentions = true)
+        {
+            return await Task.FromResult(await builder.SendAsync(ctx.Channel));
+        }
+
         private static readonly TextInfo TextInfo = new CultureInfo("en-US", false).TextInfo;
 
         public static string ToTitleCase(this string str)

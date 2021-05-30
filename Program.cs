@@ -366,18 +366,19 @@ namespace cat_bot
             _ = Task.Run(async () =>
             {
                 DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
-                KeyValuePair<DiscordGuild, List<DiscordMessage>> current = DeletedSnipeMessage.First(x => x.Key == e.Guild);
+                KeyValuePair<DiscordGuild, List<DiscordMessage>> currentMessage = DeletedSnipeMessage.First(x => x.Key == e.Guild);
+                KeyValuePair<DiscordGuild, Dictionary<ulong, string>> currentDeleter = DeletedSnipeDeleter.First(x => x.Key == e.Guild);
 
                 if (!member.IsBot)
                 {
                     try
                     {
-                        current.Value.Add(e.Message);
+                        currentMessage.Value.Add(e.Message);
                     }
                     catch
                     {
-                        current.Value.Clear();
-                        current.Value.Add(e.Message);
+                        currentMessage.Value.Clear();
+                        currentMessage.Value.Add(e.Message);
                     }
                 }
 
@@ -388,26 +389,26 @@ namespace cat_bot
 
                     try
                     {
-                        DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
-                    }
-                    catch
-                    {
                         try
                         {
-                            DeletedSnipeDeleter.Remove(e.Guild);
-                            DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                         }
                         catch
                         {
-                            try
-                            {
-                                DeletedSnipeDeleter.Add(e.Guild, member.Mention);
-                            }
-                            catch
-                            {
-                                DeletedSnipeDeleter.Remove(e.Guild);
-                                DeletedSnipeDeleter.Add(e.Guild, member.Mention);
-                            }
+                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
+                        }
+                    }
+                    catch
+                    {
+                        currentDeleter.Value.Clear();
+
+                        try
+                        {
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
+                        }
+                        catch
+                        {
+                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
                         }
                     }
                 }
@@ -418,14 +419,15 @@ namespace cat_bot
 
                     try
                     {
-                        DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                        currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                     }
                     catch
                     {
+                        currentDeleter.Value.Clear();
+
                         try
                         {
-                            DeletedSnipeDeleter.Remove(e.Guild);
-                            DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                         }
                         catch (UnauthorizedException)
                         {
@@ -433,24 +435,24 @@ namespace cat_bot
                             {
                                 try
                                 {
-                                    DeletedSnipeDeleter.Add(e.Guild, "homa give cat bot audit logs permission to see who deleted this message you gay");
+                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
                                 }
                                 catch
                                 {
-                                    DeletedSnipeDeleter.Remove(e.Guild);
-                                    DeletedSnipeDeleter.Add(e.Guild, "homa give cat bot audit logs permission to see who deleted this message you gay");
+                                    currentDeleter.Value.Clear();
+                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
                                 }
                             }
                             else
                             {
                                 try
                                 {
-                                    DeletedSnipeDeleter.Add(e.Guild, "give cat bot audit logs permision to see who deleted this message");
+                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
                                 }
                                 catch
                                 {
-                                    DeletedSnipeDeleter.Remove(e.Guild);
-                                    DeletedSnipeDeleter.Add(e.Guild, "give cat bot audit logs permision to see who deleted this message");
+                                    currentDeleter.Value.Clear();
+                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
                                 }
                             }
                         }
