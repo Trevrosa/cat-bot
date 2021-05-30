@@ -108,7 +108,7 @@ namespace cat_bot
 
             #endregion config
 
-            discord.Ready += Ready;
+            discord.GuildAvailable += Magic;
             discord.ClientErrored += ClientError;
             discord.GuildMemberRemoved += Reinvite;
 
@@ -119,6 +119,17 @@ namespace cat_bot
             await discord.ConnectAsync(new() { ActivityType = ActivityType.Playing, Name = "coded by trev !!" });
             await Task.Delay(-1).ConfigureAwait(false);
         }
+
+        private static Task Magic(DiscordClient sender, GuildCreateEventArgs e)
+        {
+            EditSnipeMessage.Add(e.Guild, new());
+            DeletedSnipeMessage.Add(e.Guild, new());
+            DeletedSnipeDeleter.Add(e.Guild, new());
+
+            return Task.CompletedTask;
+        }
+
+        #region Public
 
         private static Dictionary<string, List<ulong>> whitelisted = new();
 
@@ -136,25 +147,25 @@ namespace cat_bot
             set { blacklisted = value; }
         }
 
-        private static Dictionary<DiscordGuild, DiscordMessage> deletedSnipeMessage = new();
+        private static Dictionary<DiscordGuild, List<DiscordMessage>> deletedSnipeMessage = new();
 
-        public static Dictionary<DiscordGuild, DiscordMessage> DeletedSnipeMessage
+        public static Dictionary<DiscordGuild, List<DiscordMessage>> DeletedSnipeMessage
         {
             get { return deletedSnipeMessage; }
             set { deletedSnipeMessage = value; }
         }
 
-        private static Dictionary<DiscordGuild, string> deletedSnipeDeleter = new();
+        private static Dictionary<DiscordGuild, Dictionary<ulong, string>> deletedSnipeDeleter = new();
 
-        public static Dictionary<DiscordGuild, string> DeletedSnipeDeleter
+        public static Dictionary<DiscordGuild, Dictionary<ulong, string>> DeletedSnipeDeleter
         {
             get { return deletedSnipeDeleter; }
             set { deletedSnipeDeleter = value; }
         }
 
-        private static Dictionary<DiscordGuild, MessageUpdateEventArgs> editSnipeMessage = new();
+        private static Dictionary<DiscordGuild, List<MessageUpdateEventArgs>> editSnipeMessage = new();
 
-        public static Dictionary<DiscordGuild, MessageUpdateEventArgs> EditSnipeMessage
+        public static Dictionary<DiscordGuild, List<MessageUpdateEventArgs>> EditSnipeMessage
         {
             get { return editSnipeMessage; }
             set { editSnipeMessage = value; }
@@ -167,6 +178,8 @@ namespace cat_bot
             get { return prefix; }
             set { prefix = value; }
         }
+
+        #endregion Public
 
         public static readonly string RootDir = $"/home/trev/cat-bot";
 
@@ -219,28 +232,6 @@ namespace cat_bot
 
                     await channel.SendMessageAsync($"https://discord.gg/{invite.Code}");
                 }
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private static Task Ready(DiscordClient sender, ReadyEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                //if (File.Exists($$"{RootDir}/whitelisted.txt"))
-                //{
-                //    string[] text = await File.ReadAllLinesAsync($$"{RootDir}/whitelisted.txt");
-                //    List<string> e = text.ToList();
-                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Whitelisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                //}
-
-                //if (File.Exists($$"{RootDir}/blacklisted.txt"))
-                //{
-                //    string[] text = await File.ReadAllLinesAsync($$"{RootDir}/blacklisted.txt");
-                //    List<string> e = text.ToList();
-                //    for (int i = 0; i < e.Count; i++) { string ae = e[i]; Blacklisted.Add(ae.Split(": ").First(), ae.Split(": ").Last().Split(", ").Select(x => ulong.Parse(x)).ToList()); }
-                //}
             });
 
             return Task.CompletedTask;
@@ -370,48 +361,24 @@ namespace cat_bot
             return Task.CompletedTask;
         }
 
-        private static Task EditSnipe(DiscordClient sender, MessageUpdateEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                if (e.Channel.Type is not ChannelType.Private)
-                {
-                    DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
-
-                    if (!member.IsBot)
-                    {
-                        try
-                        {
-                            EditSnipeMessage.Add(e.Guild, e);
-                        }
-                        catch
-                        {
-                            EditSnipeMessage.Remove(e.Guild);
-                            EditSnipeMessage.Add(e.Guild, e);
-                        }
-                    }
-                }
-            });
-
-            return Task.CompletedTask;
-        }
-
         private static Task Snipe(DiscordClient sender, MessageDeleteEventArgs e)
         {
             _ = Task.Run(async () =>
             {
                 DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                KeyValuePair<DiscordGuild, List<DiscordMessage>> currentMessage = DeletedSnipeMessage.First(x => x.Key == e.Guild);
+                KeyValuePair<DiscordGuild, Dictionary<ulong, string>> currentDeleter = DeletedSnipeDeleter.First(x => x.Key == e.Guild);
 
                 if (!member.IsBot)
                 {
                     try
                     {
-                        DeletedSnipeMessage.Add(e.Guild, e.Message);
+                        currentMessage.Value.Add(e.Message);
                     }
                     catch
                     {
-                        DeletedSnipeMessage.Remove(e.Guild);
-                        DeletedSnipeMessage.Add(e.Guild, e.Message);
+                        currentMessage.Value.Clear();
+                        currentMessage.Value.Add(e.Message);
                     }
                 }
 
@@ -422,26 +389,26 @@ namespace cat_bot
 
                     try
                     {
-                        DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
-                    }
-                    catch
-                    {
                         try
                         {
-                            DeletedSnipeDeleter.Remove(e.Guild);
-                            DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                         }
                         catch
                         {
-                            try
-                            {
-                                DeletedSnipeDeleter.Add(e.Guild, member.Mention);
-                            }
-                            catch
-                            {
-                                DeletedSnipeDeleter.Remove(e.Guild);
-                                DeletedSnipeDeleter.Add(e.Guild, member.Mention);
-                            }
+                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
+                        }
+                    }
+                    catch
+                    {
+                        currentDeleter.Value.Clear();
+
+                        try
+                        {
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
+                        }
+                        catch
+                        {
+                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
                         }
                     }
                 }
@@ -452,14 +419,15 @@ namespace cat_bot
 
                     try
                     {
-                        DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                        currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                     }
                     catch
                     {
+                        currentDeleter.Value.Clear();
+
                         try
                         {
-                            DeletedSnipeDeleter.Remove(e.Guild);
-                            DeletedSnipeDeleter.Add(e.Guild, log.UserResponsible.Mention);
+                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
                         }
                         catch (UnauthorizedException)
                         {
@@ -467,26 +435,53 @@ namespace cat_bot
                             {
                                 try
                                 {
-                                    DeletedSnipeDeleter.Add(e.Guild, "homa give cat bot audit logs permission to see who deleted this message you gay");
+                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
                                 }
                                 catch
                                 {
-                                    DeletedSnipeDeleter.Remove(e.Guild);
-                                    DeletedSnipeDeleter.Add(e.Guild, "homa give cat bot audit logs permission to see who deleted this message you gay");
+                                    currentDeleter.Value.Clear();
+                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
                                 }
                             }
                             else
                             {
                                 try
                                 {
-                                    DeletedSnipeDeleter.Add(e.Guild, "give cat bot audit logs permision to see who deleted this message");
+                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
                                 }
                                 catch
                                 {
-                                    DeletedSnipeDeleter.Remove(e.Guild);
-                                    DeletedSnipeDeleter.Add(e.Guild, "give cat bot audit logs permision to see who deleted this message");
+                                    currentDeleter.Value.Clear();
+                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
                                 }
                             }
+                        }
+                    }
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private static Task EditSnipe(DiscordClient sender, MessageUpdateEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                if (e.Channel.Type is not ChannelType.Private)
+                {
+                    DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                    KeyValuePair<DiscordGuild, List<MessageUpdateEventArgs>> current = EditSnipeMessage.First(x => x.Key == e.Guild);
+
+                    if (!member.IsBot)
+                    {
+                        if (current.Value.Count < 5)
+                        {
+                            current.Value.Add(e);
+                        }
+                        else
+                        {
+                            current.Value.Clear();
+                            current.Value.Add(e);
                         }
                     }
                 }
