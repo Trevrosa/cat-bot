@@ -233,6 +233,33 @@ namespace cat_bot
             }
         }
 
+        [Command("mute"), Description("Mutes someone.")]
+        public async Task Mute(CommandContext ctx, DiscordMember member, TimeSpan time)
+        {
+            if (!ctx.Member.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                await ctx.ReplyAsync("You do not have the required permissions to mute someone.");
+                return;
+            }
+
+            if (ctx.Member.Hierarchy < member.Hierarchy)
+            {
+                await ctx.ReplyAsync("That member has a role higher than you.");
+                return;
+            }
+
+            if (member.Hierarchy > ctx.Guild.CurrentMember.Hierarchy)
+            {
+                await ctx.ReplyAsync("I cannot mute someone with a role higher than me!");
+                return;
+            }
+
+            if (time.TotalDays > 365)
+            {
+                await ctx.ReplyAsync("I cannot mute someone for more than a year.");
+            }
+        }
+
         [Command("dog"), Description("Sends the dog.")]
         public async Task Sex(CommandContext ctx, string breedoption = null)
         {

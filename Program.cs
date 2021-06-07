@@ -29,6 +29,7 @@ using System.Diagnostics;
 using LibGit2Sharp;
 using static cat_bot.Extensions;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+using System.Reflection;
 
 namespace cat_bot
 {
@@ -70,10 +71,11 @@ namespace cat_bot
                 CaseSensitive = false,
                 DmHelp = false,
                 EnableDms = true,
-                EnableMentionPrefix = true
+                EnableMentionPrefix = true,
+                UseDefaultCommandHandler = false
             });
 
-            cnext.RegisterCommands<Commands>();
+            cnext.RegisterCommands(Assembly.GetExecutingAssembly());
             cnext.CommandErrored += CommandErrored;
 
             discord.UseInteractivity(new InteractivityConfiguration()
