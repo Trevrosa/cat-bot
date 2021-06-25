@@ -20,7 +20,7 @@
     <PackageReference Include="Ben.Demystifier" Version="0.3.0" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.1.0-nightly-00875" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.1.0-nightly-00875" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.1.0-nightly-00875" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.1.0-nightly-00898" />
     <PackageReference Include="DSharpPlus" Version="4.1.0-nightly-00875" />
     <PackageReference Include="Humanizer.Core" Version="2.8.26" />
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0096" />
