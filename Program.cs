@@ -26,7 +26,6 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Events;
 using System.Diagnostics;
-using LibGit2Sharp;
 using static cat_bot.Extensions;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 

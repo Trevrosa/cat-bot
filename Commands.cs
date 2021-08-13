@@ -224,8 +224,6 @@ namespace cat_bot
             }
         }
 
-<<<<<<< Updated upstream
-=======
         [Command("jinx"), Description("Toggles jinx"), Hidden]
         public async Task Jinx(CommandContext ctx)
         {
@@ -373,7 +371,6 @@ namespace cat_bot
             }
         }
 
->>>>>>> Stashed changes
         [Command("dog"), Description("Sends the dog.")]
         public async Task Sex(CommandContext ctx, string breedoption = null)
         {
