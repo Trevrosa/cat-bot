@@ -1,4 +1,4 @@
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
@@ -108,6 +108,7 @@ namespace cat_bot
 
             #endregion config
 
+            discord.Ready += Ready;
             discord.GuildAvailable += Magic;
             discord.ClientErrored += ClientError;
             discord.GuildMemberRemoved += Reinvite;
@@ -116,8 +117,17 @@ namespace cat_bot
             discord.MessageDeleted += Snipe;
             discord.MessageUpdated += EditSnipe;
 
+            discord.MessageCreated += Gay2;
+            discord.MessageCreated += Gay1;
+            discord.GuildMemberAdded += Gay;
+
             await discord.ConnectAsync(new() { ActivityType = ActivityType.Playing, Name = "coded by trev !!" });
             await Task.Delay(-1).ConfigureAwait(false);
+        }
+
+        private static Task Ready(DiscordClient sender, ReadyEventArgs e)
+        {
+            return Task.CompletedTask;
         }
 
         private static Task Magic(DiscordClient sender, GuildCreateEventArgs e)
@@ -129,7 +139,7 @@ namespace cat_bot
             return Task.CompletedTask;
         }
 
-        #region Public
+        #region PublicVars
 
         private static Dictionary<string, List<ulong>> whitelisted = new();
 
@@ -179,7 +189,23 @@ namespace cat_bot
             set { prefix = value; }
         }
 
-        #endregion Public
+        private static List<DiscordMember> mutedmembers = new();
+
+        public static List<DiscordMember> MutedMembers
+        {
+            get { return mutedmembers; }
+            set { mutedmembers = value; }
+        }
+
+        private static Dictionary<Timer, DiscordMember> currentmuted = new();
+
+        public static Dictionary<Timer, DiscordMember> CurrentMuted
+        {
+            get { return currentmuted; }
+            set { currentmuted = value; }
+        }
+
+        #endregion PublicVars
 
         public static readonly string RootDir = $"/home/trev/cat-bot";
 
@@ -482,6 +508,90 @@ namespace cat_bot
                         {
                             current.Value.Clear();
                             current.Value.Add(e);
+                        }
+                    }
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private static Task Gay(DiscordClient sender, Guild​Member​Add​Event​Args e)
+        {
+            _ = Task.Run(async () =>
+            {
+                if (e.Member.IsBot)
+                {
+                    await e.Member.GrantRoleAsync(e.Guild.Roles[849940342614654994]);
+                }
+                else if (MutedMembers.Contains(e.Member))
+                {
+                    await e.Member.GrantRoleAsync(e.Guild.Roles[875582549592797195]);
+                    await e.Member.GrantRoleAsync(e.Guild.Roles[849939933841457202]);
+                }
+                else
+                {
+                    await e.Member.GrantRoleAsync(e.Guild.Roles[849939933841457202]);
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private static Task Gay1(DiscordClient sender, MessageCreateEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                if (e.Message.Channel.Id == 860547879956775002)
+                {
+                    if (e.Message.Content.ToLower() != "ur mom lol")
+                    {
+                        await e.Message.DeleteAsync();
+                    }
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private static Task Gay2(DiscordClient sender, MessageCreateEventArgs e)
+        {
+            _ = Task.Run(async () =>
+            {
+                if (File.Exists("./gays.txt"))
+                {
+                    File.Delete("./gays.txt");
+                }
+
+                File.CreateText("./gays.txt");
+                File.WriteAllText("./gays.txt", "0");
+
+                if (e.Message.Content.ToLower().StartsWith("!timer") && e.Message.Content.Trim().Count(x => x == ' ') == 1 && (e.Author != sender.CurrentUser) &&
+                    ((e.Author as DiscordMember).Roles.FirstOrDefault(x => x.Name == "ahaha") is null))
+                {
+                    var iflee = new StreamReader("./gays.txt");
+                    var aeee = await iflee.ReadLineAsync();
+                    var aee = int.Parse(aeee);
+                    iflee.Close();
+                    if (aee < 5)
+                    {
+                        aee += 1;
+                        File.WriteAllText("./gays.txt", aee.ToString());
+                        var time = int.Parse(e.Message.Content.Split(" ").Last());
+                        var timee = time;
+                        var msg = await e.Channel.SendMessageAsync("timer");
+                        if (time <= 1500 || e.Author.Id == 758926553454870529)
+                        {
+                            while (time > 0)
+                            {
+                                time -= 1;
+                                await msg.ModifyAsync(time.ToString() + " seconds left");
+                                await Task.Delay(1000);
+                            }
+                            aee -= 1;
+                            File.WriteAllText("./gays.txt", aee.ToString());
+                            await msg.ModifyAsync($"timer for {timee} seconds done!");
+                            await e.Channel.SendMessageAsync(e.Author.Mention);
                         }
                     }
                 }

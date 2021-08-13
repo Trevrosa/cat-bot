@@ -12,32 +12,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Drawing" Version="21.4.0" />
-    <PackageReference Include="Aspose.Font" Version="21.4.0" />
-    <PackageReference Include="Aspose.HTML" Version="21.3.0" />
-    <PackageReference Include="Aspose.Imaging" Version="21.4.0" />
-    <PackageReference Include="Aspose.Zip" Version="21.4.0" />
-    <PackageReference Include="Ben.Demystifier" Version="0.3.0" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.1.0-nightly-00875" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.1.0-nightly-00875" />
-    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.1.0-nightly-00875" />
-    <PackageReference Include="DSharpPlus" Version="4.1.0-nightly-00875" />
-    <PackageReference Include="Humanizer.Core" Version="2.8.26" />
-    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0096" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0-1.final" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.10.0-1.final" />
+    <PackageReference Include="Aspose.Drawing" Version="21.7.0" />
+    <PackageReference Include="Aspose.Font" Version="21.8.0" />
+    <PackageReference Include="Aspose.HTML" Version="21.8.0" />
+    <PackageReference Include="Aspose.Imaging" Version="21.8.0" />
+    <PackageReference Include="Aspose.Zip" Version="21.7.0" />
+    <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-00959" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0-nightly-00959" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.2.0-nightly-00959" />
+    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-00959" />
+    <PackageReference Include="Humanizer.Core" Version="2.11.10" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.313" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.11.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="Sentry" Version="3.3.4" />
+    <PackageReference Include="Sentry" Version="3.8.3" />
     <PackageReference Include="Serilog" Version="2.10.1-dev-01285" />
-    <PackageReference Include="Serilog.Exceptions" Version="6.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="7.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10284" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0-dev-00839" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00909" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="5.0.1" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="YoutubeExplode" Version="6.0.0-alpha2" />
+    <PackageReference Include="YoutubeExplode" Version="6.0.5" />
   </ItemGroup>
 
 </Project>

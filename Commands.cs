@@ -2,34 +2,25 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.VoiceNext;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using DSharpPlus.Exceptions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Net;
-using System.Net.Http;
-using DSharpPlus.EventArgs;
-using System.Globalization;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Collections.Immutable;
-using System.Text.RegularExpressions;
-using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.Interactivity;
-using DSharpPlus.VoiceNext;
-using Aspose.Drawing;
-using Aspose.Imaging;
-using Aspose.Zip;
-using Aspose.Html;
-using static cat_bot.MakeTrans;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Timers;
 using static cat_bot.Extensions;
 using static cat_bot.Program;
 
@@ -216,14 +207,14 @@ namespace cat_bot
                             string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
                             DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
-                                .WithColor(DiscordColor.Green).WithFooter("psst.. that breed doesn't exist..");
+                                .WithColor(DiscordColor.Green);
                             DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
                             await ctx.ReplyAsync(msg);
                         }
                         catch
                         {
                             DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url")))
-                                .WithColor(DiscordColor.Green).WithFooter("psst.. that breed doesn't exist..");
+                                .WithColor(DiscordColor.Green);
 
                             DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
                             await ctx.ReplyAsync(msg);
@@ -233,6 +224,156 @@ namespace cat_bot
             }
         }
 
+<<<<<<< Updated upstream
+=======
+        [Command("jinx"), Description("Toggles jinx"), Hidden]
+        public async Task Jinx(CommandContext ctx)
+        {
+            if (ctx.Guild.OwnerId != ctx.Client.CurrentApplication.Owners.First().Id)
+            {
+                return;
+            }
+        }
+
+        [Command("unmute"), Description("Unmutes someone."), Hidden]
+        public async Task Unmute(CommandContext ctx, DiscordMember member)
+        {
+            if (ctx.Guild.OwnerId != ctx.Client.CurrentApplication.Owners.First().Id)
+            {
+                return;
+            }
+
+            if (!ctx.Member.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                await ctx.ReplyAsync("You do not have the required permissions to unmute someone.");
+                return;
+            }
+
+            if (ctx.Member.Hierarchy < member.Hierarchy)
+            {
+                await ctx.ReplyAsync("That member has a role higher than you.");
+                return;
+            }
+
+            if (member.Hierarchy > ctx.Guild.CurrentMember.Hierarchy)
+            {
+                await ctx.ReplyAsync("I cannot unmute someone with a role higher than me!");
+                return;
+            }
+
+            DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
+            if (CurrentMuted.ContainsValue(member))
+            {
+                Timer timer = CurrentMuted.FirstOrDefault(x => x.Value == member).Key;
+                timer.Dispose();
+
+                CurrentMuted.Remove(timer);
+                await member.RevokeRoleAsync(mutedrole);
+                await ctx.RespondAsync($"{member.Username} has been unmuted!");
+            }
+            else
+            {
+                await ctx.RespondAsync("That member is not muted.");
+            }
+        }
+
+        [Command("mute"), Description("Mutes someone."), Hidden]
+        public async Task Mute(CommandContext ctx, DiscordMember member, TimeSpan time)
+        {
+            if (ctx.Guild.OwnerId != ctx.Client.CurrentApplication.Owners.First().Id)
+            {
+                return;
+            }
+
+            if (!ctx.Member.PermissionsIn(ctx.Channel).HasPermission(Permissions.ManageRoles))
+            {
+                await ctx.ReplyAsync("You do not have the required permissions to mute someone.");
+                return;
+            }
+
+            if (ctx.Member.Hierarchy < member.Hierarchy)
+            {
+                await ctx.ReplyAsync("That member has a role higher than you.");
+                return;
+            }
+
+            if (member.Hierarchy > ctx.Guild.CurrentMember.Hierarchy)
+            {
+                await ctx.ReplyAsync("I cannot mute someone with a role higher than me!");
+                return;
+            }
+
+            if (time.TotalDays > 365)
+            {
+                await ctx.ReplyAsync("I cannot mute someone for more than a year.");
+                return;
+            }
+
+            MutedMembers.Add(member);
+            DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
+
+            Timer timer = new();
+            timer.Interval = time.TotalMilliseconds;
+            timer.AutoReset = false;
+            timer.Start();
+
+            GC.KeepAlive(timer);
+
+            timer.Elapsed += (sender, e) => MutedThen(sender, e, ctx, member.Id, time, mutedrole);
+            await member.GrantRoleAsync(mutedrole);
+
+            CurrentMuted.Add(timer, member);
+
+            if (time.Days > 0)
+            {
+                await ctx.RespondAsync($"{member.Username} has been muted for {time.Days} days");
+            }
+            else if (time.Hours > 0)
+            {
+                await ctx.RespondAsync($"{member.Username} has been muted for {time.Hours} hours");
+            }
+            else if (time.Minutes > 0)
+            {
+                await ctx.RespondAsync($"{member.Username} has been muted for {time.Minutes} minutes");
+            }
+            else
+            {
+                await ctx.RespondAsync($"{member.Username} has been muted for {time.Seconds} seconds");
+            }
+
+            static async void MutedThen(object sender, ElapsedEventArgs e, CommandContext ctx, ulong memberid, TimeSpan time, DiscordRole mutedrole)
+            {
+                DiscordMember member = await ctx.Guild.GetMemberAsync(memberid);
+
+                if (!CurrentMuted.ContainsValue(member))
+                {
+                    return;
+                }
+
+                DiscordChannel channel = ctx.Guild.GetChannel(849938407651016738);
+
+                await member.RevokeRoleAsync(mutedrole);
+
+                if (time.Days > 0)
+                {
+                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Days} days");
+                }
+                else if (time.Hours > 0)
+                {
+                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Hours} hours");
+                }
+                else if (time.Minutes > 0)
+                {
+                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Minutes} minutes");
+                }
+                else
+                {
+                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Seconds} seconds");
+                }
+            }
+        }
+
+>>>>>>> Stashed changes
         [Command("dog"), Description("Sends the dog.")]
         public async Task Sex(CommandContext ctx, string breedoption = null)
         {
