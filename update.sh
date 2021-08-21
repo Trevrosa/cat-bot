@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd '/home/trev/cat-bot/'
+sudo git stash
 pull=$(sudo git pull -f)
 
 if [[ $pull =~ 'Already up to date.' ]];
