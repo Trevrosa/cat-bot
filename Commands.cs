@@ -7,6 +7,7 @@ using DSharpPlus.Exceptions;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.VoiceNext;
+using Humanizer;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -31,129 +32,7 @@ namespace cat_bot
         private static readonly Random Random = new();
         private static readonly WebClient WebClient = new();
 
-        [Command("unholy"), Hidden]
-        public async Task Unholy(CommandContext ctx, int count = 1)
-        {
-            if (ctx.Channel.Type is ChannelType.Text)
-            {
-                while (count != 0)
-                {
-                    int choice = Random.Next(1, 3);
-
-                    switch (choice)
-                    {
-                        case 1:
-                            {
-                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
-                                JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
-                                count--;
-
-                                break;
-                            }
-                        case 2:
-                            {
-                                try
-                                {
-                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                    await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
-                                    count--;
-                                }
-                                catch
-                                {
-                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                    await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
-                                    count--;
-                                }
-
-                                break;
-                            }
-                        case 3:
-                            {
-                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
-                                count--;
-
-                                break;
-                            }
-                        default:
-                            {
-                                return;
-                            }
-                    }
-
-                    await Task.Delay(200).ConfigureAwait(false);
-                }
-            }
-            else if (ctx.Channel.Type is ChannelType.Private)
-            {
-                DiscordGuild guild = await ctx.User.GetGuild(ctx.Client);
-                DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
-
-                while (count != 0)
-                {
-                    int choice = Random.Next(1, 3);
-
-                    switch (choice)
-                    {
-                        case 1:
-                            {
-                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
-                                JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                await member.SendMessageAsync($"{result.GetProperty("url")}");
-                                count--;
-
-                                break;
-                            }
-                        case 2:
-                            {
-                                try
-                                {
-                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
-                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                    await member.SendMessageAsync($"{result.GetProperty("url")}");
-                                    count--;
-                                }
-                                catch
-                                {
-                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                    await member.SendMessageAsync($"{result.GetProperty("messsage")}");
-                                    count--;
-                                }
-
-                                break;
-                            }
-                        case 3:
-                            {
-                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
-                                JsonElement result = JsonDocument.Parse(ew).RootElement;
-
-                                await member.SendMessageAsync($"{result.GetProperty("messsage")}");
-                                count--;
-
-                                break;
-                            }
-                        default:
-                            {
-                                return;
-                            }
-                    }
-                }
-            }
-        }
-
-        [Command("cat"), Description("Cat!!!!!"), Cooldown(4, 2, CooldownBucketType.Channel)]
+        [Command("cat"), Description("Cat!!!!!")]
         public async Task Cat(CommandContext ctx, string breedoption = null)
         {
             if (breedoption is null)
@@ -166,17 +45,17 @@ namespace cat_bot
                 {
                     string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})")
+                        .WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
 
-                    await ctx.ReplyAsync(msg);
+                    await ctx.ReplyAsync(emb);
                 }
                 catch
                 {
-                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!")
+                        .WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
 
-                    await ctx.ReplyAsync(msg);
+                    await ctx.ReplyAsync(emb);
                 }
             }
             else if (breedoption is not null)
@@ -189,10 +68,10 @@ namespace cat_bot
 
                     string breed = result.GetProperty("breeds")[0].GetProperty("name").ToString();
 
-                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
-                    DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
+                    DiscordEmbedBuilder emb = new DiscordEmbedBuilder()
+                        .WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url"))).WithColor(DiscordColor.Green);
 
-                    await ctx.ReplyAsync(msg);
+                    await ctx.ReplyAsync(emb);
                 }
                 catch
                 {
@@ -208,28 +87,16 @@ namespace cat_bot
 
                             DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!! ({breed})").WithImageUrl(Convert.ToString(result.GetProperty("url")))
                                 .WithColor(DiscordColor.Green);
-                            DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
-                            await ctx.ReplyAsync(msg);
+                            await ctx.ReplyAsync(emb);
                         }
                         catch
                         {
                             DiscordEmbedBuilder emb = new DiscordEmbedBuilder().WithTitle($"Here's a cat!!").WithImageUrl(Convert.ToString(result.GetProperty("url")))
                                 .WithColor(DiscordColor.Green);
-
-                            DiscordMessageBuilder msg = new DiscordMessageBuilder().WithReply(ctx.Message.Id);
-                            await ctx.ReplyAsync(msg);
+                            await ctx.ReplyAsync(emb);
                         }
                     }
                 }
-            }
-        }
-
-        [Command("jinx"), Description("Toggles jinx"), Hidden]
-        public async Task Jinx(CommandContext ctx)
-        {
-            if (ctx.Guild.OwnerId != ctx.Client.CurrentApplication.Owners.First().Id)
-            {
-                return;
             }
         }
 
@@ -301,74 +168,57 @@ namespace cat_bot
                 return;
             }
 
-            if (time.TotalDays > 365)
+            if (time.TotalDays > (365 * 2))
             {
-                await ctx.ReplyAsync("I cannot mute someone for more than a year.");
+                await ctx.ReplyAsync("I cannot mute someone for more than 2 years.");
                 return;
             }
 
-            MutedMembers.Add(member);
-            DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
-
-            Timer timer = new();
-            timer.Interval = time.TotalMilliseconds;
-            timer.AutoReset = false;
-            timer.Start();
-
-            GC.KeepAlive(timer);
-
-            timer.Elapsed += (sender, e) => MutedThen(sender, e, ctx, member.Id, time, mutedrole);
-            await member.GrantRoleAsync(mutedrole);
-
-            CurrentMuted.Add(timer, member);
-
-            if (time.Days > 0)
+            if (CurrentMuted.ContainsValue(member))
             {
-                await ctx.RespondAsync($"{member.Username} has been muted for {time.Days} days");
-            }
-            else if (time.Hours > 0)
-            {
-                await ctx.RespondAsync($"{member.Username} has been muted for {time.Hours} hours");
-            }
-            else if (time.Minutes > 0)
-            {
-                await ctx.RespondAsync($"{member.Username} has been muted for {time.Minutes} minutes");
-            }
-            else
-            {
-                await ctx.RespondAsync($"{member.Username} has been muted for {time.Seconds} seconds");
+                await ctx.ReplyAsync("That member is already muted.");
+                return;
             }
 
-            static async void MutedThen(object sender, ElapsedEventArgs e, CommandContext ctx, ulong memberid, TimeSpan time, DiscordRole mutedrole)
+            _ = Task.Run(async () =>
             {
-                DiscordMember member = await ctx.Guild.GetMemberAsync(memberid);
+                DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
 
-                if (!CurrentMuted.ContainsValue(member))
-                {
-                    return;
-                }
+                Timer timer = new();
+                timer.Interval = time.TotalMilliseconds;
+                timer.AutoReset = false;
+                timer.Start();
 
-                DiscordChannel channel = ctx.Guild.GetChannel(849938407651016738);
+                GC.KeepAlive(timer);
 
-                await member.RevokeRoleAsync(mutedrole);
+                timer.Elapsed += (sender, e) => MutedThen(sender, e, ctx, member.Id, time, mutedrole);
+                await member.GrantRoleAsync(mutedrole);
 
-                if (time.Days > 0)
+                CurrentMuted.Add(timer, member);
+
+                await ctx.RespondAsync($"{member.Username} has been muted for {time.Humanize(2)}");
+
+                static async void MutedThen(object sender, ElapsedEventArgs e, CommandContext ctx, ulong memberid, TimeSpan time, DiscordRole mutedrole)
                 {
-                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Days} days");
+                    DiscordMember member = await ctx.Guild.GetMemberAsync(memberid);
+
+                    if (!CurrentMuted.ContainsValue(member))
+                    {
+                        return;
+                    }
+
+                    if (member is null)
+                    {
+                        return;
+                    }
+
+                    DiscordChannel channel = ctx.Guild.GetChannel(849938407651016738);
+
+                    await member.RevokeRoleAsync(mutedrole);
+
+                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Humanize(2)}");
                 }
-                else if (time.Hours > 0)
-                {
-                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Hours} hours");
-                }
-                else if (time.Minutes > 0)
-                {
-                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Minutes} minutes");
-                }
-                else
-                {
-                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Seconds} seconds");
-                }
-            }
+            });
         }
 
         [Command("dog"), Description("Sends the dog.")]
@@ -378,40 +228,32 @@ namespace cat_bot
             {
                 string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
                 string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+                string breed = dog.Split("/")[4].Humanize(LetterCasing.Title).Replace("St", "St. ");
 
-                string breed = dog.Split("/")[4].Replace("-", " ");
-
-                breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
-
-                await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build())
-                    .WithReply(ctx.Message.Id));
+                await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
+                    .WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build()));
             }
             else if (breedoption is not null)
             {
                 try
                 {
-                    string json = await GetAsync("https://dog.ceo/api/breed/{breedoption}/images/random");
+                    string parsed = breedoption.ToTitleCase().Dehumanize();
+
+                    string json = await GetAsync("https://dog.ceo/api/breed/" + parsed + "/images/random");
                     string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+                    string breed = dog.Split("/")[4].Humanize(LetterCasing.Title).Replace("St", "St. ");
 
-                    string breed = dog.Split("/")[4].Replace("-", " ");
-
-                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
-
-                    await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build())
-                    .WithReply(ctx.Message.Id));
+                    await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
+                        .WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build()));
                 }
                 catch
                 {
                     string json = await GetAsync("https://dog.ceo/api/breeds/image/random");
                     string dog = JsonDocument.Parse(json).RootElement.GetProperty("message").ToString();
+                    string breed = dog.Split("/")[4].Humanize(LetterCasing.Title).Replace("St", "St. ");
 
-                    string breed = dog.Split("/")[4].Replace("-", " ");
-
-                    breed = breed.ToTitleCase().Replace("St", "St. ").ToTitleCase();
-
-                    await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder().WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog)
-                        .WithFooter("psst.. that breed doesn't exist..").WithColor(DiscordColor.Green).Build())
-                    .WithReply(ctx.Message.Id));
+                    await ctx.ReplyAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
+                        .WithTitle($"Here's a dog!! ({breed})").WithImageUrl(dog).WithColor(DiscordColor.Green).Build()));
                 }
             }
         }
@@ -800,6 +642,128 @@ namespace cat_bot
                 VoiceNextConnection connection = vnext.GetConnection(ctx.Guild);
 
                 connection.Disconnect();
+            }
+        }
+
+        [Command("unholy"), Hidden]
+        public async Task Unholy(CommandContext ctx, int count = 1)
+        {
+            if (ctx.Channel.Type is ChannelType.Text)
+            {
+                while (count != 0)
+                {
+                    int choice = Random.Next(1, 3);
+
+                    switch (choice)
+                    {
+                        case 1:
+                            {
+                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
+                                count--;
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                try
+                                {
+                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                    await ctx.Member.TrySendMessageAsync($"{result.GetProperty("url")}", ctx.Channel);
+                                    count--;
+                                }
+                                catch
+                                {
+                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                    await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
+                                    count--;
+                                }
+
+                                break;
+                            }
+                        case 3:
+                            {
+                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await ctx.Member.TrySendMessageAsync($"{result.GetProperty("message")}", ctx.Channel);
+                                count--;
+
+                                break;
+                            }
+                        default:
+                            {
+                                return;
+                            }
+                    }
+
+                    await Task.Delay(200).ConfigureAwait(false);
+                }
+            }
+            else if (ctx.Channel.Type is ChannelType.Private)
+            {
+                DiscordGuild guild = await ctx.User.GetGuild(ctx.Client);
+                DiscordMember member = await guild.GetMemberAsync(ctx.User.Id);
+
+                while (count != 0)
+                {
+                    int choice = Random.Next(1, 3);
+
+                    switch (choice)
+                    {
+                        case 1:
+                            {
+                                string ew = await GetAsync("https://hmtai.herokuapp.com/nsfw/hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await member.SendMessageAsync($"{result.GetProperty("url")}");
+                                count--;
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                try
+                                {
+                                    string ew = await GetAsync("https://api.computerfreaker.cf/v1/hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                    await member.SendMessageAsync($"{result.GetProperty("url")}");
+                                    count--;
+                                }
+                                catch
+                                {
+                                    string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                    JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                    await member.SendMessageAsync($"{result.GetProperty("messsage")}");
+                                    count--;
+                                }
+
+                                break;
+                            }
+                        case 3:
+                            {
+                                string ew = await GetAsync("https://nekobot.xyz/api/image?type=hentai");
+                                JsonElement result = JsonDocument.Parse(ew).RootElement;
+
+                                await member.SendMessageAsync($"{result.GetProperty("messsage")}");
+                                count--;
+
+                                break;
+                            }
+                        default:
+                            {
+                                return;
+                            }
+                    }
+                }
             }
         }
 

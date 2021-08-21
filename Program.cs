@@ -115,10 +115,7 @@ namespace cat_bot
             discord.MessageCreated += CommandHandler;
             discord.MessageDeleted += Snipe;
             discord.MessageUpdated += EditSnipe;
-
-            discord.MessageCreated += Gay2;
-            discord.MessageCreated += Gay1;
-            discord.GuildMemberAdded += Gay;
+            discord.GuildMemberAdded += Role;
 
             await discord.ConnectAsync(new() { ActivityType = ActivityType.Playing, Name = "coded by trev !!" });
             await Task.Delay(-1).ConfigureAwait(false);
@@ -188,14 +185,6 @@ namespace cat_bot
             set { prefix = value; }
         }
 
-        private static List<DiscordMember> mutedmembers = new();
-
-        public static List<DiscordMember> MutedMembers
-        {
-            get { return mutedmembers; }
-            set { mutedmembers = value; }
-        }
-
         private static Dictionary<Timer, DiscordMember> currentmuted = new();
 
         public static Dictionary<Timer, DiscordMember> CurrentMuted
@@ -214,11 +203,19 @@ namespace cat_bot
             {
                 if (e.Author != sender.CurrentUser)
                 {
+                    if (e.Message.Channel.Id == 860547879956775002)
+                    {
+                        if (e.Message.Content.ToLower() != "ur mom lol")
+                        {
+                            await e.Message.DeleteAsync();
+                        }
+                    }
+
                     if (e.Message.Content.StartsWith("!"))
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content[1..], out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author as DiscordMember, e.Channel, e.Message.Content[1..], Prefix, cmd, args);
+                        CommandContext ctx = sender.GetCommandsNext().CreateContext(e.Message, Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
@@ -227,7 +224,7 @@ namespace cat_bot
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand(e.Message.Content, out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author as DiscordMember, e.Channel, e.Message.Content, Prefix, cmd, args);
+                        CommandContext ctx = sender.GetCommandsNext().CreateContext(e.Message, Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
                     }
@@ -236,9 +233,40 @@ namespace cat_bot
                     {
                         Command cmd = sender.GetCommandsNext().FindCommand("dog", out string args);
 
-                        CommandContext ctx = sender.GetCommandsNext().CreateFakeContext(e.Author as DiscordMember, e.Channel, e.Message.Content, Prefix, cmd, args);
+                        CommandContext ctx = sender.GetCommandsNext().CreateContext(e.Message, Prefix, cmd, args);
 
                         await cmd.RunCommandAsync(ctx, sender);
+                    }
+
+                    if (e.Message.Content.ToLower().StartsWith("!timer") && e.Message.Content.Trim().Count(x => x == ' ') == 1 && (e.Author != sender.CurrentUser) &&
+                        ((e.Author as DiscordMember).Roles.FirstOrDefault(x => x.Name == "ahaha") is null))
+                    {
+                        var iflee = new StreamReader("./gays.txt");
+                        var aeee = await iflee.ReadLineAsync();
+                        var aee = int.Parse(aeee);
+                        iflee.Close();
+
+                        if (aee < 5)
+                        {
+                            aee += 1;
+                            File.WriteAllText("./gays.txt", aee.ToString());
+                            var time = int.Parse(e.Message.Content.Split(" ").Last());
+                            var timee = time;
+                            var msg = await e.Channel.SendMessageAsync("timer");
+                            if (time <= 1500 || e.Author.Id == 758926553454870529)
+                            {
+                                while (time > 0)
+                                {
+                                    time -= 1;
+                                    await msg.ModifyAsync(time.ToString() + " seconds left");
+                                    await Task.Delay(1000);
+                                }
+                                aee -= 1;
+                                File.WriteAllText("./gays.txt", aee.ToString());
+                                await msg.ModifyAsync($"timer for {timee} seconds done!");
+                                await e.Channel.SendMessageAsync(e.Author.Mention);
+                            }
+                        }
                     }
                 }
             });
@@ -390,7 +418,7 @@ namespace cat_bot
         {
             _ = Task.Run(async () =>
             {
-                DiscordMember member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                DiscordMember member = e.Message.Author as DiscordMember;
                 KeyValuePair<DiscordGuild, List<DiscordMessage>> currentMessage = DeletedSnipeMessage.First(x => x.Key == e.Guild);
                 KeyValuePair<DiscordGuild, Dictionary<ulong, string>> currentDeleter = DeletedSnipeDeleter.First(x => x.Key == e.Guild);
 
@@ -404,83 +432,6 @@ namespace cat_bot
                     {
                         currentMessage.Value.Clear();
                         currentMessage.Value.Add(e.Message);
-                    }
-                }
-
-                if (e.Guild.CurrentMember.PermissionsIn(e.Channel).HasPermission(Permissions.ViewAuditLog))
-                {
-                    IReadOnlyList<DiscordAuditLogEntry> audits = await e.Guild.GetAuditLogsAsync(1);
-                    DiscordAuditLogEntry log = audits.FirstOrDefault(x => x.ActionType is AuditLogActionType.MessageDelete);
-
-                    try
-                    {
-                        try
-                        {
-                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
-                        }
-                        catch
-                        {
-                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
-                        }
-                    }
-                    catch
-                    {
-                        currentDeleter.Value.Clear();
-
-                        try
-                        {
-                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
-                        }
-                        catch
-                        {
-                            currentDeleter.Value.Add(e.Message.Id, member.Mention);
-                        }
-                    }
-                }
-                else
-                {
-                    IReadOnlyList<DiscordAuditLogEntry> audits = await e.Guild.GetAuditLogsAsync(1);
-                    DiscordAuditLogEntry log = audits.First(x => x.ActionType is AuditLogActionType.MessageDelete);
-
-                    try
-                    {
-                        currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
-                    }
-                    catch
-                    {
-                        currentDeleter.Value.Clear();
-
-                        try
-                        {
-                            currentDeleter.Value.Add(e.Message.Id, log.UserResponsible.Mention);
-                        }
-                        catch (UnauthorizedException)
-                        {
-                            if (e.Guild.Owner.Username == "Homa")
-                            {
-                                try
-                                {
-                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
-                                }
-                                catch
-                                {
-                                    currentDeleter.Value.Clear();
-                                    currentDeleter.Value.Add(e.Message.Id, "homa give cat bot audit logs permission to see who deleted this message you gay");
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
-                                }
-                                catch
-                                {
-                                    currentDeleter.Value.Clear();
-                                    currentDeleter.Value.Add(e.Message.Id, "give cat bot audit logs permision to see who deleted this message");
-                                }
-                            }
-                        }
                     }
                 }
             });
@@ -515,7 +466,7 @@ namespace cat_bot
             return Task.CompletedTask;
         }
 
-        private static Task Gay(DiscordClient sender, Guild​Member​Add​Event​Args e)
+        private static Task Role(DiscordClient sender, Guild​Member​Add​Event​Args e)
         {
             _ = Task.Run(async () =>
             {
@@ -523,7 +474,7 @@ namespace cat_bot
                 {
                     await e.Member.GrantRoleAsync(e.Guild.Roles[849940342614654994]);
                 }
-                else if (MutedMembers.Contains(e.Member))
+                else if (CurrentMuted.ContainsValue(e.Member))
                 {
                     await e.Member.GrantRoleAsync(e.Guild.Roles[875582549592797195]);
                     await e.Member.GrantRoleAsync(e.Guild.Roles[849939933841457202]);
@@ -531,68 +482,6 @@ namespace cat_bot
                 else
                 {
                     await e.Member.GrantRoleAsync(e.Guild.Roles[849939933841457202]);
-                }
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private static Task Gay1(DiscordClient sender, MessageCreateEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                if (e.Message.Channel.Id == 860547879956775002)
-                {
-                    if (e.Message.Content.ToLower() != "ur mom lol")
-                    {
-                        await e.Message.DeleteAsync();
-                    }
-                }
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private static Task Gay2(DiscordClient sender, MessageCreateEventArgs e)
-        {
-            _ = Task.Run(async () =>
-            {
-                if (File.Exists("./gays.txt"))
-                {
-                    File.Delete("./gays.txt");
-                }
-
-                File.CreateText("./gays.txt");
-                File.WriteAllText("./gays.txt", "0");
-
-                if (e.Message.Content.ToLower().StartsWith("!timer") && e.Message.Content.Trim().Count(x => x == ' ') == 1 && (e.Author != sender.CurrentUser) &&
-                    ((e.Author as DiscordMember).Roles.FirstOrDefault(x => x.Name == "ahaha") is null))
-                {
-                    var iflee = new StreamReader("./gays.txt");
-                    var aeee = await iflee.ReadLineAsync();
-                    var aee = int.Parse(aeee);
-                    iflee.Close();
-                    if (aee < 5)
-                    {
-                        aee += 1;
-                        File.WriteAllText("./gays.txt", aee.ToString());
-                        var time = int.Parse(e.Message.Content.Split(" ").Last());
-                        var timee = time;
-                        var msg = await e.Channel.SendMessageAsync("timer");
-                        if (time <= 1500 || e.Author.Id == 758926553454870529)
-                        {
-                            while (time > 0)
-                            {
-                                time -= 1;
-                                await msg.ModifyAsync(time.ToString() + " seconds left");
-                                await Task.Delay(1000);
-                            }
-                            aee -= 1;
-                            File.WriteAllText("./gays.txt", aee.ToString());
-                            await msg.ModifyAsync($"timer for {timee} seconds done!");
-                            await e.Channel.SendMessageAsync(e.Author.Mention);
-                        }
-                    }
                 }
             });
 
