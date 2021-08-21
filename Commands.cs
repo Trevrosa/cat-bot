@@ -131,6 +131,7 @@ namespace cat_bot
             {
                 Timer timer = CurrentMuted.FirstOrDefault(x => x.Value == member).Key;
                 timer.Dispose();
+                GC.Collect();
 
                 CurrentMuted.Remove(timer);
                 await member.RevokeRoleAsync(mutedrole);
@@ -180,45 +181,42 @@ namespace cat_bot
                 return;
             }
 
-            _ = Task.Run(async () =>
+            DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
+
+            Timer timer = new();
+            timer.Interval = time.TotalMilliseconds;
+            timer.AutoReset = false;
+            timer.Start();
+
+            GC.KeepAlive(timer);
+
+            timer.Elapsed += (sender, e) => MutedThen(sender, e, ctx, member.Id, time, mutedrole);
+            await member.GrantRoleAsync(mutedrole);
+
+            CurrentMuted.Add(timer, member);
+
+            await ctx.RespondAsync($"{member.Username} has been muted for {time.Humanize(2)}");
+
+            static async void MutedThen(object sender, ElapsedEventArgs e, CommandContext ctx, ulong memberid, TimeSpan time, DiscordRole mutedrole)
             {
-                DiscordRole mutedrole = ctx.Guild.GetRole(875582549592797195);
+                DiscordMember member = await ctx.Guild.GetMemberAsync(memberid);
 
-                Timer timer = new();
-                timer.Interval = time.TotalMilliseconds;
-                timer.AutoReset = false;
-                timer.Start();
-
-                GC.KeepAlive(timer);
-
-                timer.Elapsed += (sender, e) => MutedThen(sender, e, ctx, member.Id, time, mutedrole);
-                await member.GrantRoleAsync(mutedrole);
-
-                CurrentMuted.Add(timer, member);
-
-                await ctx.RespondAsync($"{member.Username} has been muted for {time.Humanize(2)}");
-
-                static async void MutedThen(object sender, ElapsedEventArgs e, CommandContext ctx, ulong memberid, TimeSpan time, DiscordRole mutedrole)
+                if (!CurrentMuted.ContainsValue(member))
                 {
-                    DiscordMember member = await ctx.Guild.GetMemberAsync(memberid);
-
-                    if (!CurrentMuted.ContainsValue(member))
-                    {
-                        return;
-                    }
-
-                    if (member is null)
-                    {
-                        return;
-                    }
-
-                    DiscordChannel channel = ctx.Guild.GetChannel(849938407651016738);
-
-                    await member.RevokeRoleAsync(mutedrole);
-
-                    await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Humanize(2)}");
+                    return;
                 }
-            });
+
+                if (member is null)
+                {
+                    return;
+                }
+
+                DiscordChannel channel = ctx.Guild.GetChannel(849938407651016738);
+
+                await member.RevokeRoleAsync(mutedrole);
+
+                await channel.SendMessageAsync($"{member.Username} has been unmuted after {time.Humanize(2)}");
+            }
         }
 
         [Command("dog"), Description("Sends the dog.")]
